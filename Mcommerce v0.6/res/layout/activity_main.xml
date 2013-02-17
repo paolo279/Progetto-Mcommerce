@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:background="@drawable/header"
+        android:paddingRight="3dp" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal"
+            android:src="@android:drawable/btn_star_big_on" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_weight="0.37"
+            android:gravity="center_vertical"
+            android:text="Sport Incontro Mobile"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/serch_shape"
+        android:padding="2sp" >
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.56"
+            android:ems="10"
+            android:text="Cerca un prodotto..."
+            android:textColor="@android:color/darker_gray"
+            android:textStyle="italic" />
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="44dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center_vertical"
+            android:src="@android:drawable/ic_search_category_default" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5sp"
+        android:padding="3sp"
+        android:paddingLeft="5sp"
+        android:text="Sfoglia le categorie:"
+        android:textColor="@color/rosso"
+        android:textSize="20sp" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/serch_shape" >
+
+    </ListView>
+
+</LinearLayout>
