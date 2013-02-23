@@ -22,8 +22,6 @@ and open the template in the editor.
             <script language="javascript" type="text/javascript">
                 document.forms["cart_'. $idP.'"].submit()
             </script>';
-      //setTimeout("document.getElementById('test').submit()", 3000)
-      //document.forms["cart"].submit()
         ?>
     </body>
 </html>
