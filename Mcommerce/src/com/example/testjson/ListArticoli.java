@@ -46,6 +46,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ListArticoli extends MainActivity {
 	
@@ -81,7 +82,18 @@ public class ListArticoli extends MainActivity {
 		
 		dialog = ProgressDialog.show(ListArticoli.this, null, "Caricamento articoli...");
 		
-		new ListaArticoliTask().execute();
+		
+		
+		if(getIntent().getExtras().containsKey("query")){
+			
+			String query = getIntent().getExtras().getString("query");
+			new SerchTask(query).execute();
+			
+		}else{
+			cat = getIntent().getExtras().getInt("id");
+			new ListaArticoliTask().execute();
+		}
+		
 		
 		due.setOnItemClickListener(new OnItemClickListener() {
 
@@ -112,6 +124,7 @@ public class ListArticoli extends MainActivity {
 		@Override
 		protected String doInBackground(Void... params) {
 			// TODO Auto-generated method stub
+			
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/articoli.php");
@@ -157,7 +170,7 @@ public class ListArticoli extends MainActivity {
 				
 				for(int i=0; i<jsonArray.length(); i++){
 					
-					//HashMap<String,Object> articleMap=new HashMap<String, Object>();
+					
 					desc.add(jsonArray.getJSONObject(i).getString("Description"));
 					id.add(jsonArray.getJSONObject(i).getString("IdProduct"));
 					cod.add(jsonArray.getJSONObject(i).getString("ProdCode"));
@@ -209,9 +222,6 @@ public class ListArticoli extends MainActivity {
 	    			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
 	    			
 	    			HttpResponse response = client.execute(httpPost);
-					//StatusLine statusLine = response.getStatusLine();
-					//int statusCode = statusLine.getStatusCode();
-					//if (statusCode == 200) {
 						
 						HttpEntity entity = response.getEntity();
 						InputStream content = entity.getContent();
@@ -230,15 +240,7 @@ public class ListArticoli extends MainActivity {
 						
 						
 						
-					/* Vecchio codice per salvare i bitmap:
-					 * for(int i=0; i<id.size();i++){
-						
-						Bitmap bitmap = getBitmap(imageUrls[i]);
-						Bitmap bitmapsmall = Bitmap.createScaledBitmap(bitmap, 70, 70, true);
-	    			
-						bitmaplist[i]= bitmapsmall;
-						}*/
-					//old return: bitmaplist;
+					
 	    			return bitmaplist;
 	    			
 					
@@ -253,7 +255,7 @@ public class ListArticoli extends MainActivity {
 				return null;
 			
 			}
-        	/// old parameter:Bitmap bitmaplist[]
+        
 			protected void onPostExecute(Bitmap bitmaplist[]) {
 				
 				for(int i=0;i<id.size();i++){
@@ -276,6 +278,99 @@ public class ListArticoli extends MainActivity {
 				
 			}
         }
+        
+        
+        
+        public class SerchTask extends AsyncTask<Void,String,String>{
+        	String query;
+        	
+        	public SerchTask(String query){
+        		this.query = query;
+        	}
+        	
+        	
+    		@Override
+    		protected String doInBackground(Void... params) {
+    			// TODO Auto-generated method stub
+    			
+    			StringBuilder builder = new StringBuilder();		
+    			HttpClient client = new DefaultHttpClient();
+    			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/CercaArticoli.php");
+    			try {
+    				
+    				List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
+    				nameValuePair.add(new BasicNameValuePair("query", query));
+    				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+    				HttpResponse response = client.execute(httpPost);
+    				StatusLine statusLine = response.getStatusLine();
+    				int statusCode = statusLine.getStatusCode();
+    				if (statusCode == 200) {
+    	        
+    					HttpEntity entity = response.getEntity();
+    					InputStream content = entity.getContent();
+    					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+    					String line;
+    					while ((line = reader.readLine()) != null) 
+    					{
+    						builder.append(line);
+    						
+    					} //end while
+    					 dati = builder.toString();
+    					
+    				} 
+    				
+    				return dati;
+    				
+    			} catch (ClientProtocolException e) {
+    				e.printStackTrace();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    
+    			return null;
+    			
+    		}
+    		
+    		
+    		protected void onPostExecute(String dati) {
+    			
+    			///risolvere il problema della ricerca senza alcun risultato !!!
+    			if(dati.equals("null")){
+    				
+    				dialog.dismiss();
+    				Toast toast = Toast.makeText(getApplicationContext(), "Articolo non Trovato", 1000);
+    				toast.show();
+					Intent intent = new Intent(ListArticoli.this,MainActivity.class);
+					startActivity(intent);
+					
+				}else{
+    			
+    			try {
+    				JSONArray jsonArray = new JSONArray(dati);
+    					
+    					for(int i=0; i<jsonArray.length(); i++){
+        					
+        					
+        					desc.add(jsonArray.getJSONObject(i).getString("Description"));
+        					id.add(jsonArray.getJSONObject(i).getString("IdProduct"));
+        					cod.add(jsonArray.getJSONObject(i).getString("ProdCode"));
+        					String[] price = new String[2];
+        					price = getPrices(jsonArray.getJSONObject(i).getString("priceList"));
+        					prl.add(price[0]);
+        					prv.add(price[1]);
+        					
+        				}
+        					new TaskImg().execute();
+        		
+    				
+        			} catch (JSONException e) {
+        				e.printStackTrace();
+        			}
+    	
+				}
+    		}
+
+        }    
         
      
 		

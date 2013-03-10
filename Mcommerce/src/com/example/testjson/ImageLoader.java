@@ -1,8 +1,6 @@
 package com.example.testjson;
 
 //Ringrazio l'autote di LazyList, mi sono permesso di compilarti il package e di inserirlo nel mio progetto.
-//Questa classe la devo modificare in quanto ci sono riferimenti a delle risorse del suo progetto...
-//Potevi non metterle final e nessuno te la toccava !!!
 
 
 

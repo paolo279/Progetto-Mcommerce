@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
+	
 		
 		uno = (ListView) findViewById(R.id.listView1);
 		new CategoryTask().execute();
@@ -90,6 +91,7 @@ public class MainActivity extends Activity {
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				serch_box.setText("");
+				
 			}
 		});
 		
@@ -101,13 +103,17 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String query = serch_box.getText().toString();
-				Toast toast = Toast.makeText(getApplicationContext(), "Cerca "+query, 1000);
-				toast.show();
+
+				if(query.matches("^\\s*$") || query.matches("") ){
+					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
+					toast.show();
+				}else{
+					
+					Intent intent = new Intent(getApplicationContext(), ListArticoli.class);
+					intent.putExtra("query", query);
+					startActivity(intent);
+				}
 				
-				Intent intent = new Intent(getApplicationContext(), SerchActivity.class);
-				intent.putExtra("query", query);
-				
-				startActivity(intent);
 				
 			}
 		});

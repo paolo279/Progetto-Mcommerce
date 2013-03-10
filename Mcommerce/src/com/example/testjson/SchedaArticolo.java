@@ -71,7 +71,7 @@ public class SchedaArticolo extends MainActivity {
 		
 		
 		//parte il progressdialog
-		pd = ProgressDialog.show(SchedaArticolo.this, "Caricamento...", "Sto caricando");
+		pd = ProgressDialog.show(SchedaArticolo.this, null, "Caricamento dati...");
 		
 		uno.setText(getIntent().getExtras().getString("Description"));
 		due.setText(getIntent().getExtras().getString("ProdCode"));
@@ -79,7 +79,7 @@ public class SchedaArticolo extends MainActivity {
 		
 		// preleva tutti i dati !!
 		new DownloadImg().execute();
-		new SchedaArtTask().execute();
+		new SchedaArtTask1().execute();
 		
 		
 		
@@ -182,6 +182,71 @@ public class SchedaArticolo extends MainActivity {
 		}
 	}
 	
+	
+	public class SchedaArtTask1 extends AsyncTask<Void, String, String> {
+		String colorString;
+		String descString;
+		
+		@Override
+		protected String doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			StringBuilder builder = new StringBuilder();
+			HttpClient client = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/schedart_1.php");
+			
+			try {
+				List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+				nameValuePair.add(new BasicNameValuePair("id",id));
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+				HttpResponse response = client.execute(httpPost);
+				StatusLine statusLine = response.getStatusLine();
+				int statusCode = statusLine.getStatusCode();
+				
+				if (statusCode == 200) {
+	        
+					HttpEntity entity = response.getEntity();
+					InputStream content = entity.getContent();
+					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+					String line;
+					int i = 0;
+					while ((line = reader.readLine()) != null) 
+					{	
+						if(i==0) {
+							colorString = line;
+						}else {builder.append(line);}
+						i++;
+					} 
+					descString = builder.toString();
+					
+				}
+				
+				
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return dati;
+		}
+		
+		protected void onPostExecute(String dati){
+			
+				
+			
+				
+				colore.setText(colorString);
+				
+				desc.setText(Html.fromHtml(descString));
+				pd.dismiss();
+			
+			
+		}	
+	}
 	
 	// Task per il download della foto
 	
@@ -326,9 +391,6 @@ public class SchedaArticolo extends MainActivity {
 							url ="http://www.sportincontro.it/test/CartPost.php?idP="+idP;
 							System.out.println(url);
 							
-							//String url ="http://www.sportincontro.it/default.asp?cmd=getProd&cmdID="+getProd+"&idC="+idC+"&pType=-1";
-							//Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
-							//startActivity(intent);
 							
 							buy.setTextColor(Color.rgb(0, 255, 0));
 							Toast toast = Toast.makeText(getApplicationContext(), taglie[which]+" selezionata", 1000);
@@ -346,71 +408,6 @@ public class SchedaArticolo extends MainActivity {
 			}
 			
         }
-        
-        @Override
-    	public boolean onCreateOptionsMenu(Menu menu) {
-    		// Inflate the menu; this adds items to the action bar if it is present.
-    		//getMenuInflater().inflate(R.menu.activity_main, menu);
-    		
-    		
-    		menu.add("Carrello").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					// TODO Auto-generated method stub
-					
-					Intent intent = new Intent(SchedaArticolo.this,Cart.class);
-					url = "http://www.sportincontro.it/default.asp?cmd=showCart";
-					intent.putExtra("url", url);
-					startActivity(intent);
-					return false;
-				}
-			});
-    		
-    		menu.add("Home").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					// TODO Auto-generated method stub
-					
-					Intent intent = new Intent(SchedaArticolo.this,MainActivity.class);
-					startActivity(intent);
-					return false;
-				}
-			});
-    		
-    		menu.add("Chi Siamo").setOnMenuItemClickListener(new OnMenuItemClickListener() {	
-    			@Override
-    			public boolean onMenuItemClick(MenuItem item) {
-    				// TODO Auto-generated method stub
-    				Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("http://www.sportincontro.it"));
-    				startActivity(intent);
-    				return false;
-    			}
-    		} );
-    		
-    		
-    		menu.add("Scrivici").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-    			@Override
-    			public boolean onMenuItemClick(MenuItem item) {
-    				// TODO Auto-generated method stub
-    				Intent email = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:info@sportincontro.it"));
-    				startActivity(email);
-    				return false;
-    			}
-    		});
-    		
-    		menu.add("Telefonaci").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-    			@Override
-    			public boolean onMenuItemClick(MenuItem item) {
-    				// TODO Auto-generated method stub
-    				Intent tel = new Intent(Intent.ACTION_VIEW, Uri.parse("tel://+39062310844"));
-    				startActivity(tel);
-    				return false;
-    			}
-    		});
-    		return true;
-    	}
     		
     	
     
