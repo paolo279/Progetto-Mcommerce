@@ -14,7 +14,7 @@ $id = $_POST["id"];
 $q = mysql_query("SELECT CustomT2Desc, DescriptionExt1 FROM WebOggetti WHERE IdProduct = $id ");
 
 while($e=mysql_fetch_array($q)) {
- 
+    $e[1] =  stripslashes($e[1]);
     print $e[0]."\n".$e[1];
   }
 	
