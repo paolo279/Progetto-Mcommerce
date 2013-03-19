@@ -46,16 +46,17 @@ public class SecondActivity extends MainActivity {
 		setContentView(R.layout.second);
 		
 		
-		
+		//prendo i riferimenti alle view
 		cat = getIntent().getExtras().getString("categoria");
-		
 		due = (ListView) findViewById(R.id.listView2);
 		
+		// creo l'adapter con una lista semplice e la lista di subcategorie
 		lista = new ArrayAdapter(this, android.R.layout.simple_list_item_1,v);
 		
-		
+		//esegue il task per prelevare le subcategorie della categoria scelta
 		new SubcategoryTask().execute();
 		
+		//al click della subcategoria parte l'activity per visualizzare i prodotti
 		due.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -83,6 +84,8 @@ public class SecondActivity extends MainActivity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
+			
+			// esegue una post http con il valore della categorie scelta nella main activity
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/subcategorie.php");
@@ -115,6 +118,7 @@ public class SecondActivity extends MainActivity {
 			}
 			
 			try {
+				//dopo aver prelevato i dati crea una array di JSON con le subcategorie e inserisce i valori nelle liste
 				JSONArray jsonArray = new JSONArray(dati);
 				
 				for(int i=0; i<jsonArray.length(); i++){
@@ -130,7 +134,7 @@ public class SecondActivity extends MainActivity {
 		}
 
 		protected void onPostExecute(Void unused) {
-			
+			// al termine del task setta l'adapter
 			due.setAdapter(lista);
 		
 		}

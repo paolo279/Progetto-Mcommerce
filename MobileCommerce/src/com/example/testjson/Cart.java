@@ -13,6 +13,7 @@ public class Cart extends MainActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.cart_layout);
 		
+		//riferimento alla WebView e attivazione del javascript e dello zoom
 		WebView mywv = (WebView) findViewById(R.id.webView1);
 		mywv.getSettings().setJavaScriptEnabled(true);
 		mywv.getSettings().setBuiltInZoomControls(true);

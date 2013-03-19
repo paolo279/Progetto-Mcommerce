@@ -63,23 +63,21 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// prendo i riferimenti ai widget
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
-		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
-	
-		
 		uno = (ListView) findViewById(R.id.listView1);
+		
+		// adapter con riferimento al layout e alla lista di categorie
+		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
+		
+		
+		// esegue il task per recuperare le categorie
 		new CategoryTask().execute();
 		
 		// GCM start
-		
 		GCMconnessione();
-		  
-	        
-	
-		  
-		  
-		  
+		
 		
 		uno.setOnItemClickListener(new OnItemClickListener(){
 
@@ -88,12 +86,12 @@ public class MainActivity extends Activity {
 					long arg3) {
 				// TODO Auto-generated method stub
 				
+					//inserisco nel bundle l'id della categoria scelto e lancio la seconda activity
 					String b = v.get(arg2);
 					
 					Intent intent = new Intent(MainActivity.this,SecondActivity.class);
 					intent.putExtra("categoria", b);
 					
-					//startService(new Intent(getApplicationContext(), AdService.class));
 					startActivity(intent);
 				};	
 		});
@@ -117,7 +115,8 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String query = serch_box.getText().toString();
-
+				
+				//se la query è composta solo da spazi o è vuoto non esegue la ricerca
 				if(query.matches("^\\s*$") || query.matches("") ){
 					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
 					toast.show();
@@ -186,6 +185,8 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
+			
+			// esegue una post http per prendere le categorie
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/categorie.php");
@@ -214,6 +215,7 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 			try {
+				// crea un'array JSON con la stringa letta e inserisce i valori in una lista
 				JSONArray jsonArray = new JSONArray(dati);
 				for(int i=0; i<jsonArray.length(); i++){
 					v.add(jsonArray.getJSONObject(i).getString("Descrizione categoria"));}
@@ -230,6 +232,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void unused) {
 			
+			//dopo aver eseguito il task setto l'adapter
 			uno.setAdapter(lista);
 			
 			
@@ -243,9 +246,8 @@ public class MainActivity extends Activity {
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.activity_main, menu);
 		
+		//menu valido per tutte le activity grazie all'estensione di questa
 		
 		menu.add("Carrello").setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
@@ -306,7 +308,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
-	
+	// metodo per il brodcastreceiver
 	private final BroadcastReceiver mHandleMessageReceiver =
             new BroadcastReceiver() {
         @Override

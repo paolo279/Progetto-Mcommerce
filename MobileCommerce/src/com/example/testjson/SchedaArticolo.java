@@ -65,29 +65,29 @@ public class SchedaArticolo extends MainActivity {
 		TextView due = (TextView) findViewById(R.id.textView2);
 		TextView prL = (TextView) findViewById(R.id.prLisText);
 		TextView prV = (TextView) findViewById(R.id.prVenText);
-		
-		
 		colore = (TextView) findViewById(R.id.textView3);
 		desc = (TextView) findViewById(R.id.textView4);
-		
 		ImageView img = (ImageView) findViewById(R.id.imageView2);
-		
 		btn = (Button) findViewById(R.id.button1);
 		buy = (Button) findViewById(R.id.button2);
+		id= getIntent().getExtras().getString("id");
 		
-		
-		//parte il progressdialog
+		//parte il dialog di attesa
 		pd = ProgressDialog.show(SchedaArticolo.this, null, "Caricamento dati...");
 		
+		// setta i testi dei dati passati dalla precendente activity
 		uno.setText(getIntent().getExtras().getString("Description"));
 		due.setText(getIntent().getExtras().getString("ProdCode"));
 		prL.setText(getIntent().getExtras().getString("PriceList"));
 		prV.setText(getIntent().getExtras().getString("PriceSell"));
-		id= getIntent().getExtras().getString("id");
+		
+		
+		
 		
 		// preleva tutti i dati !!
 		new DownloadImg(img,3).execute();
 		new SchedaArtTask().execute();
+		
 		
 		// dialog per vedere immagine in alta risoluzione
 		img.setOnClickListener(new OnClickListener() {
@@ -95,6 +95,7 @@ public class SchedaArticolo extends MainActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
 				//creo un dialog per l'immagine grande
 				dialog = new Dialog(SchedaArticolo.this);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -111,17 +112,16 @@ public class SchedaArticolo extends MainActivity {
 		
 		
 		// gestione evento di tocco sul bottone "Taglie Disponibili"
-		
 		btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
-				new TaglieTask().execute(); 
+					
+					//parte il task per la ricerca delle taglie disponibili
+					new TaglieTask().execute(); 
 				
 					//in caso viene selezionata una taglia il Bottone "Acquista" diventa cliccabile e lo aggiunge al carrello !
-	
 					buy.setOnClickListener(new OnClickListener() {
 						
 						@Override
@@ -141,9 +141,7 @@ public class SchedaArticolo extends MainActivity {
 	}
 	
 	
-	//Task per il download dei dati
-	
-	
+	//Task per il download dei dati rimanenti
 	public class SchedaArtTask extends AsyncTask<Void, String, String> {
 		String colorString;
 		String descString;
@@ -200,6 +198,7 @@ public class SchedaArticolo extends MainActivity {
 				colore.setText(colorString);
 				
 				desc.setText(Html.fromHtml(descString));
+				
 				pd.dismiss();
 			
 			
@@ -207,7 +206,6 @@ public class SchedaArticolo extends MainActivity {
 	}
 	
 	// Task per il download della foto
-	
 	private class DownloadImg extends AsyncTask<Void,Bitmap,Bitmap> {
 	   	 ImageView imageview;
 	   	 int tipoFoto;
@@ -352,7 +350,7 @@ public class SchedaArticolo extends MainActivity {
 							url ="http://www.sportincontro.it/test/CartPost.php?idP="+idP;
 							System.out.println(url);
 							
-							
+							//il pulsante acquista diventa verde
 							buy.setTextColor(Color.rgb(0, 255, 0));
 							Toast toast = Toast.makeText(getApplicationContext(), taglie[which]+" selezionata", 1000);
 							toast.show();

@@ -1,5 +1,6 @@
 package com.example.testjson;
 
+//activity che viene lanciata dalla notifica
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;

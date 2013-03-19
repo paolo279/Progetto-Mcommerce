@@ -61,25 +61,28 @@ public class ListArticoli extends MainActivity {
 		
 		
 		// prendo i riferimenti alle view 
-		
 		due = (ListView) findViewById(R.id.listView3);
 		img = (ImageView) findViewById(R.id.imageView2);
 		
-		arrayData=new ArrayList<HashMap<String,Object>>(); // array di dati per l'adapter
 		
+		// array di dati per il simpleadapter custum
+		arrayData=new ArrayList<HashMap<String,Object>>(); 
 		String[] from = {"Description","priceList","priceSell","icona"};
 		int[] to ={R.id.titoloArt,R.id.priceList,R.id.priceSell,R.id.imageView2};
-		
 		lista = new ExtendedSimpleAdapter(getApplicationContext(), arrayData, R.layout.articolo_row, from, to);
 		
-		dialog = ProgressDialog.show(ListArticoli.this, null, "Caricamento articoli..."); // dialog per il caricamento della lista
+		
+		// dialog per il caricamento della lista
+		dialog = ProgressDialog.show(ListArticoli.this, null, "Caricamento articoli..."); 
 		
 		
 		//nel caso l'intent ricevuta riguarda una ricerca esegue questo codice
 		if(getIntent().getExtras().containsKey("query")){
 			
 			String query = getIntent().getExtras().getString("query");
-			new SerchTask(query).execute(); // parte il task per la ricerca della query nel database
+			
+			// parte il task per la ricerca della query nel database
+			new SerchTask(query).execute(); 
 			
 		}else{
 			
@@ -89,15 +92,16 @@ public class ListArticoli extends MainActivity {
 		}
 		
 		
-		
-		due.setOnItemClickListener(new OnItemClickListener() { //click su un oggetto della lista che apre la scheda articolo !
+		//click su un oggetto della lista che apre la scheda articolo !
+		due.setOnItemClickListener(new OnItemClickListener() { 
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(ListArticoli.this, SchedaArticolo.class);
 				
+				// nell'intent inserisco i dati già in possesso per la scheda dell'articolo scelto
+				Intent intent = new Intent(ListArticoli.this, SchedaArticolo.class);
 				intent.putExtra("ProdCode", cod.get(arg2));
 				intent.putExtra("id", id.get(arg2));
 				intent.putExtra("Description", desc.get(arg2));
@@ -109,7 +113,9 @@ public class ListArticoli extends MainActivity {
 		});
 	}
 	
-	protected void onDestroy(){	//quando l'activity viene "distrutta" verrà cancellata anche la cache nella SD
+	
+	//quando l'activity viene "distrutta" verrà cancellata anche la cache nella SD
+	protected void onDestroy(){	
 		super.onDestroy(); 
 		lista.imageLoader.clearCache();
 	}
@@ -122,11 +128,12 @@ public class ListArticoli extends MainActivity {
 		protected String doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			
+			// esegue una post http con l'id della categoria scelta
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/articoli.php");
 			try {
-				String stringId = ""+cat;
+				String stringId = Integer.toString(cat);
 				List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
 				nameValuePair.add(new BasicNameValuePair("idcategoria", stringId));
 				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
@@ -163,25 +170,33 @@ public class ListArticoli extends MainActivity {
 		protected void onPostExecute(String dati) {
 			
 			try {
+				
+				//dopo aver prelevato i dati crea una array di ogg. JSON e inserisce i valori nelle varie liste
 				JSONArray jsonArray = new JSONArray(dati);
 				
 				for(int i=0; i<jsonArray.length(); i++){
 					
+					/*
 					Articolo articolo = new Articolo();
 					articolo.productId = jsonArray.getJSONObject(i).getInt("IdProduct");
 					articolo.prodCode = jsonArray.getJSONObject(i).getString("ProdCode");
-					articolo.titolo = jsonArray.getJSONObject(i).getString("Description");
+					articolo.titolo = jsonArray.getJSONObject(i).getString("Description");*/
 					
 					
 					desc.add(jsonArray.getJSONObject(i).getString("Description"));
 					id.add(jsonArray.getJSONObject(i).getString("IdProduct"));
 					cod.add(jsonArray.getJSONObject(i).getString("ProdCode"));
+					
+					//array per i 2 prezzi che verranno calcolati nel metodo getPrice()
 					String[] price = new String[2];
 					price = getPrices(jsonArray.getJSONObject(i).getString("priceList"));
+					
+					
 					prl.add(price[0]);
 					prv.add(price[1]);
 					
 				}
+					//dopo aver preso le stringhe per costruire la lista, viene eseguito il task per prelevare gli url delle foto
 					new TaskImg().execute();
 					
 					
@@ -200,6 +215,7 @@ public class ListArticoli extends MainActivity {
 	   	 
         class TaskImg extends AsyncTask<Void, Void, Void>{
         	
+        	//array dove verranno salvate le url delle img
         	String[] imageUrls;
         	
 
@@ -209,7 +225,8 @@ public class ListArticoli extends MainActivity {
 				
 				
 	        	
-	
+				//esegue una post http con valori il numero di foto da prendere e il tipo di foto da trovare
+				//in questo caso quella piccola
 				HttpClient client = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/foto.php");
 	    		try {
@@ -233,7 +250,7 @@ public class ListArticoli extends MainActivity {
 						int j=0;
 						while ((line = reader.readLine()) != null) 
 						{
-							
+							//controllo che il paramentro non contiene spazi
 							line = line.replace(" ","%20");
 							
 							imageUrls[j] = "http://www.sportincontro.it/files/sport_incontro_Files/Foto/"+line;
@@ -257,6 +274,7 @@ public class ListArticoli extends MainActivity {
         
 			protected void onPostExecute(Void v) {
 				
+				// dopo l'eseguzione del task inserisce tutti i valori una mappa per l'adapter e lo setta
 				for(int i=0;i<id.size();i++){
 					
 					HashMap<String,Object> articleMap=new HashMap<String, Object>();
@@ -279,7 +297,7 @@ public class ListArticoli extends MainActivity {
         }
         
         
-        
+        //task per visualizzare gli articoli della ricerca
         public class SerchTask extends AsyncTask<Void,String,String>{
         	String query;
         	
@@ -372,7 +390,7 @@ public class ListArticoli extends MainActivity {
         }    
         
      
-		
+    //metodo per calcolare i prezzi di listino e di vendita dalla stringa del db
 	public  String[] getPrices(String pricemap){
 		String a = pricemap.substring(4);
 		
