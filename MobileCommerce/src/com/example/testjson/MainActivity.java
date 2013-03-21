@@ -45,6 +45,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -57,7 +58,8 @@ public class MainActivity extends Activity {
 	public List<String> v = new ArrayList<String>();
 	public ListView uno;
 	public CategorieAdapter lista;
-	
+	public String logName;
+	public TextView login_view;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +69,7 @@ public class MainActivity extends Activity {
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
 		uno = (ListView) findViewById(R.id.listView1);
+		login_view = (TextView) findViewById(R.id.LoginView);
 		
 		// adapter con riferimento al layout e alla lista di categorie
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
@@ -95,6 +98,27 @@ public class MainActivity extends Activity {
 					startActivity(intent);
 				};	
 		});
+		
+			
+			//al clik sul login si apre la LoginActivity
+			login_view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(logName!=null){
+					}else {
+					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+					
+					startActivityForResult(intent, 1);
+					}
+				}
+			});
+		
+		
+		
+		
+		
 		
 		// quando viene dato il focus alla editText si cancella la scritta iniziale !!
 		serch_box.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -244,6 +268,16 @@ public class MainActivity extends Activity {
 		
 		
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode==1){
+			logName = data.getExtras().getString("loginName");
+			login_view.setText("Benvenuto, "+logName);
+			
+		}
+		
+	}
+	
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		

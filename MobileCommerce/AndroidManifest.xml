@@ -52,9 +52,7 @@
             android:name="com.example.testjson.Cart"
             android:screenOrientation="portrait" >
         </activity>
-        
-        <activity
-            android:name="com.example.testjson.AdNotification" >
+        <activity android:name="com.example.testjson.AdNotification" >
         </activity>
 
         <receiver
@@ -73,7 +71,10 @@
 
         <service android:name="com.example.testjson.GCMIntentService" />
 
-        
+        <activity
+            android:name="com.example.testjson.LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
     </application>
 
 </manifest>

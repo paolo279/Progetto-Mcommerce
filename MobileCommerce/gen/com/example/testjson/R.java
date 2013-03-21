@@ -25,56 +25,64 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080000;
-        public static final int TextView02=0x7f08000d;
-        public static final int adView=0x7f080007;
-        public static final int button1=0x7f080014;
-        public static final int button2=0x7f08001c;
-        public static final int categoria=0x7f08000f;
-        public static final int editText1=0x7f080003;
-        public static final int image=0x7f080010;
+        public static final int LoginView=0x7f080009;
+        public static final int TextView01=0x7f080005;
+        public static final int TextView02=0x7f080013;
+        public static final int adView=0x7f08000d;
+        public static final int button1=0x7f08001a;
+        public static final int button2=0x7f080022;
+        public static final int categoria=0x7f080015;
+        public static final int editText1=0x7f08000a;
+        public static final int image=0x7f080016;
         public static final int imageView1=0x7f080001;
-        public static final int imageView2=0x7f080008;
-        public static final int list=0x7f080013;
-        public static final int listView1=0x7f080006;
-        public static final int listView2=0x7f08001f;
-        public static final int listView3=0x7f080012;
-        public static final int menu_settings=0x7f080021;
-        public static final int prLisText=0x7f080017;
-        public static final int prVenText=0x7f08001a;
-        public static final int priceList=0x7f08000a;
-        public static final int priceSell=0x7f08000c;
-        public static final int scrollView2=0x7f08001d;
-        public static final int serchButton=0x7f080004;
-        public static final int text=0x7f080011;
-        public static final int textView01=0x7f080015;
+        public static final int imageView2=0x7f08000e;
+        public static final int list=0x7f080019;
+        public static final int listView1=0x7f08000c;
+        public static final int listView2=0x7f080025;
+        public static final int listView3=0x7f080018;
+        public static final int loginButton=0x7f080007;
+        public static final int menu_settings=0x7f080027;
+        public static final int prLisText=0x7f08001d;
+        public static final int prVenText=0x7f080020;
+        public static final int priceList=0x7f080010;
+        public static final int priceSell=0x7f080012;
+        public static final int pwdText=0x7f080006;
+        public static final int registerButton=0x7f080008;
+        public static final int scrollView2=0x7f080023;
+        public static final int serchButton=0x7f08000b;
+        public static final int text=0x7f080017;
+        public static final int textView01=0x7f08001b;
         public static final int textView1=0x7f080002;
-        public static final int textView2=0x7f080005;
-        public static final int textView3=0x7f08000b;
-        public static final int textView4=0x7f08001e;
-        public static final int titoloArt=0x7f080009;
-        public static final int tv1=0x7f080016;
-        public static final int tv2=0x7f080018;
-        public static final int tv3=0x7f080019;
-        public static final int tv4=0x7f08001b;
-        public static final int webView1=0x7f08000e;
-        public static final int zoom_image=0x7f080020;
+        public static final int textView2=0x7f080003;
+        public static final int textView3=0x7f080011;
+        public static final int textView4=0x7f080024;
+        public static final int titoloArt=0x7f08000f;
+        public static final int tv1=0x7f08001c;
+        public static final int tv2=0x7f08001e;
+        public static final int tv3=0x7f08001f;
+        public static final int tv4=0x7f080021;
+        public static final int userText=0x7f080004;
+        public static final int webView1=0x7f080014;
+        public static final int zoom_image=0x7f080026;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int ad_layout=0x7f030001;
-        public static final int articolo_row=0x7f030002;
-        public static final int cart_layout=0x7f030003;
-        public static final int categoria_row=0x7f030004;
-        public static final int item=0x7f030005;
-        public static final int listarticoli=0x7f030006;
-        public static final int main=0x7f030007;
-        public static final int schedarticolo=0x7f030008;
-        public static final int second=0x7f030009;
-        public static final int zoom_dialog=0x7f03000a;
+        public static final int activity_login=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int ad_layout=0x7f030002;
+        public static final int articolo_row=0x7f030003;
+        public static final int cart_layout=0x7f030004;
+        public static final int categoria_row=0x7f030005;
+        public static final int item=0x7f030006;
+        public static final int listarticoli=0x7f030007;
+        public static final int main=0x7f030008;
+        public static final int schedarticolo=0x7f030009;
+        public static final int second=0x7f03000a;
+        public static final int zoom_dialog=0x7f03000b;
     }
     public static final class menu {
-        public static final int activity_main=0x7f070000;
-        public static final int ad_layout=0x7f070001;
+        public static final int activity_login=0x7f070000;
+        public static final int activity_main=0x7f070001;
+        public static final int ad_layout=0x7f070002;
     }
     public static final class string {
         public static final int already_registered=0x7f040005;
@@ -97,6 +105,7 @@ public final class R {
         public static final int server_unregister_error=0x7f040010;
         public static final int server_unregistered=0x7f04000e;
         public static final int title_activity_ad_notification=0x7f040013;
+        public static final int title_activity_login=0x7f040014;
     }
     public static final class style {
         /** 

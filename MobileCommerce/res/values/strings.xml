@@ -24,5 +24,6 @@
     <string name="options_register">Register</string>
     <string name="options_unregister">Unregister</string>
     <string name="title_activity_ad_notification">AdNotification</string>
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>
