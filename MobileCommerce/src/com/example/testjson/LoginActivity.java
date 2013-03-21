@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -63,6 +64,8 @@ public class LoginActivity extends MainActivity {
 				// TODO Auto-generated method stub
 				new LoginTask().execute();
 				
+				sparisciTastiera();
+				
 				
 			}
 		});
@@ -80,6 +83,9 @@ public class LoginActivity extends MainActivity {
 	}
 	
 	public class LoginTask extends AsyncTask<Void, Void, Void> {
+		
+		String user;
+		String password;
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
@@ -88,11 +94,18 @@ public class LoginActivity extends MainActivity {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/login.php");
 			
+			user = user_text.getText().toString();
+			password = pwd_text.getText().toString();
+			
 				 
+			if(user.matches("^\\s*$") || user.matches(""))return null;
+			
+			if(password.matches("^\\s*$") || password.matches(""))return null;
+				
 				try {
 					List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
-					nameValuePair.add(new BasicNameValuePair("user", user_text.getText().toString()));
-					nameValuePair.add(new BasicNameValuePair("pwd", pwd_text.getText().toString()));
+					nameValuePair.add(new BasicNameValuePair("user", user));
+					nameValuePair.add(new BasicNameValuePair("pwd", password));
 					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
 					HttpResponse response = client.execute(httpPost);
 					StatusLine statusLine = response.getStatusLine();
@@ -119,6 +132,9 @@ public class LoginActivity extends MainActivity {
 				}
 				
 			
+				
+				
+			
 			
 			return null;
 		}
@@ -127,7 +143,7 @@ public class LoginActivity extends MainActivity {
 			
 			if(login_name!=null){
 				
-				String postData = "uid=gianluca86&pwd=spinco";
+				String postData = "uid="+user+"&pwd="+password;
 				mywv.postUrl("http://www.sportincontro.it/default.asp", EncodingUtils.getBytes(postData, "base64"));
 				
 				mywv.setWebViewClient(new WebViewClient(){

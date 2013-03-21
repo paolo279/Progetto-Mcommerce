@@ -31,16 +31,20 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
@@ -63,6 +67,10 @@ public class MainActivity extends Activity {
 	public CategorieAdapter lista;
 	public String logName;
 	public TextView login_view;
+	public WebView mywv;
+	SharedPreferences userpref;
+	SharedPreferences.Editor editor;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,8 +81,12 @@ public class MainActivity extends Activity {
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
 		uno = (ListView) findViewById(R.id.listView1);
 		login_view = (TextView) findViewById(R.id.LoginView);
-		final WebView mywv = new WebView(this);
+		mywv = new WebView(this);
 		
+		// inizializzo la SheredPreferences e il nome del referente se è salvato
+		userpref = getSharedPreferences("Username", Context.MODE_PRIVATE);
+		logName = userpref.getString("Referente", null);
+		if(logName!=null) login_view.setText("Benvenuto, "+logName);
 		
 		// adapter con riferimento al layout e alla lista di categorie
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
@@ -112,19 +124,10 @@ public class MainActivity extends Activity {
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					if(logName!=null){ 
+						
+						logout();
 					
-					String postData = "cmdLogOut=LogOff";
-					mywv.setWebViewClient(new WebViewClient(){
-							@Override
-						    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-						        view.loadUrl(url);
-						        return true;
-						    }
-					});
 					
-					mywv.postUrl("http://www.sportincontro.it/default.asp?cmd=logout", EncodingUtils.getBytes(postData, "base64"));
-					logName = null;
-					login_view.setText("Clicca per Eseguire l'Accesso");
 					}else {
 					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 					
@@ -157,7 +160,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String query = serch_box.getText().toString();
-				
+				sparisciTastiera();
 				//se la query è composta solo da spazi o è vuoto non esegue la ricerca
 				if(query.matches("^\\s*$") || query.matches("") ){
 					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
@@ -276,24 +279,79 @@ public class MainActivity extends Activity {
 			
 			//dopo aver eseguito il task setto l'adapter
 			uno.setAdapter(lista);
-			
-			
-			
-			
-		
-		}
-		
-		
-		
+		}	
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode==1){
+			
+			//prende il nome del referente e lo inserisce nella textview
 			logName = data.getExtras().getString("loginName");
 			login_view.setText("Benvenuto, "+logName);
 			
+			//Salva il nome del referente nello SheredPreference
+			editor = userpref.edit();
+			editor.putString("Referente", logName);
+	        editor.commit();
 		}
+	}
+	
+	// metodo che effettua il logout 
+	public void logout(){
 		
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		
+		builder.setTitle("Sei Sicuro di discotterti ?");
+		builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+				mywv.setWebViewClient(new WebViewClient(){
+					@Override
+				    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				        view.loadUrl(url);
+				        return true;
+				    }
+				});
+			
+			
+				mywv.loadUrl("http://www.sportincontro.it/default.asp?cmd=logout");
+				logName = null;
+				editor = userpref.edit();
+				editor.putString("Referente", logName);
+		        editor.commit();
+				login_view.setText("Clicca per Eseguire l'Accesso");
+				
+			}
+		});
+		
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		AlertDialog logoutDialog = builder.create();
+		logoutDialog.show();
+		
+		
+	
+	}
+	
+	//protected void onRestart(){
+	//System.out.println("Sono ripartito");
+	//}
+	
+	// metodo che fa sparire la tastiera dallo schermo
+	public void sparisciTastiera(){
+		InputMethodManager imm = (InputMethodManager) getSystemService(
+			    INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 	}
 	
 	
@@ -359,6 +417,9 @@ public class MainActivity extends Activity {
 		});
 		return true;
 	}
+	
+	
+
 	
 	// metodo per il brodcastreceiver
 	private final BroadcastReceiver mHandleMessageReceiver =
