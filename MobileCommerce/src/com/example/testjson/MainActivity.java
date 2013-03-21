@@ -21,6 +21,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -40,6 +41,8 @@ import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -70,6 +73,8 @@ public class MainActivity extends Activity {
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
 		uno = (ListView) findViewById(R.id.listView1);
 		login_view = (TextView) findViewById(R.id.LoginView);
+		final WebView mywv = new WebView(this);
+		
 		
 		// adapter con riferimento al layout e alla lista di categorie
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
@@ -106,7 +111,20 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					if(logName!=null){
+					if(logName!=null){ 
+					
+					String postData = "cmdLogOut=LogOff";
+					mywv.setWebViewClient(new WebViewClient(){
+							@Override
+						    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+						        view.loadUrl(url);
+						        return true;
+						    }
+					});
+					
+					mywv.postUrl("http://www.sportincontro.it/default.asp?cmd=logout", EncodingUtils.getBytes(postData, "base64"));
+					logName = null;
+					login_view.setText("Clicca per Eseguire l'Accesso");
 					}else {
 					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 					

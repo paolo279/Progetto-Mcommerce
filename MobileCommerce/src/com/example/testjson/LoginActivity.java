@@ -86,21 +86,29 @@ public class LoginActivity extends MainActivity {
 			// TODO Auto-generated method stub
 			
 			HttpClient client = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/default.asp");
+			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/login.php");
 			
 				 
 				try {
 					List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
-					nameValuePair.add(new BasicNameValuePair("uid", "gianluca86"));
-					nameValuePair.add(new BasicNameValuePair("pwd", "spinco"));
-					httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+					nameValuePair.add(new BasicNameValuePair("user", user_text.getText().toString()));
+					nameValuePair.add(new BasicNameValuePair("pwd", pwd_text.getText().toString()));
 					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
 					HttpResponse response = client.execute(httpPost);
 					StatusLine statusLine = response.getStatusLine();
 					int statusCode = statusLine.getStatusCode();
 					if (statusCode == 200) {
-						System.out.println("Tutto ok");
-						login_name = "Paolo Colucci";
+						
+						HttpEntity entity = response.getEntity();
+						InputStream content = entity.getContent();
+						BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+						String line;
+						while ((line = reader.readLine()) != null) 
+						{
+							login_name = line;
+							
+						} //end while
+						
 					}
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
@@ -117,18 +125,26 @@ public class LoginActivity extends MainActivity {
 		
 		protected void onPostExecute(Void unused){
 			
-			String postData = "uid=gianluca86&pwd=spinco";
-			mywv.postUrl("http://www.sportincontro.it/default.asp", EncodingUtils.getBytes(postData, "base64"));
+			if(login_name!=null){
+				
+				String postData = "uid=gianluca86&pwd=spinco";
+				mywv.postUrl("http://www.sportincontro.it/default.asp", EncodingUtils.getBytes(postData, "base64"));
+				
+				mywv.setWebViewClient(new WebViewClient(){
+					public void onPageFinished(WebView view, String url) {
+						Intent intent = getIntent();
+						System.out.println("bella");
+						intent.putExtra("loginName", login_name);
+						LoginActivity.this.setResult(1, intent);
+						LoginActivity.this.finish();
+				    }
+				});
+			} else {
+				
+				Toast toast = Toast.makeText(getApplicationContext(), "Login Fallito", 1000);
+				toast.show();
+			}
 			
-			mywv.setWebViewClient(new WebViewClient(){
-				public void onPageFinished(WebView view, String url) {
-					Intent intent = getIntent();
-					System.out.println("bella");
-					intent.putExtra("loginName", login_name);
-					LoginActivity.this.setResult(1, intent);
-					LoginActivity.this.finish();
-			    }
-			});
 			
 		}
 		

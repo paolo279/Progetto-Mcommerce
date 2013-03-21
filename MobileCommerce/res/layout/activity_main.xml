@@ -44,7 +44,8 @@
                 android:id="@+id/LoginView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Esegui l&apos;accesso" />
+                android:text="Clicca per Eseguire l&apos;Accesso"
+                android:textSize="15sp" />
 
         </LinearLayout>
 
