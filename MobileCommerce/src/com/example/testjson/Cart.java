@@ -28,6 +28,7 @@ public class Cart extends MainActivity {
 		mywv = (WebView) findViewById(R.id.webView1);
 		mywv.getSettings().setJavaScriptEnabled(true);
 		mywv.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+		
 		mywv.setWebViewClient(new WebViewClient(){
 			@Override
 		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -37,7 +38,7 @@ public class Cart extends MainActivity {
 		});
 		
 		//prende url passato dalla precedente activity e carica la webview
-		String url = getIntent().getExtras().getString("url");
+		String url = "http://www.sportincontro.it/default.asp?cmd=showCart#colMid";
 		mywv.loadUrl(url);
 	}
 	

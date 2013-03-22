@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -56,6 +57,7 @@ public class SchedaArticolo extends MainActivity {
 	public AlertDialog.Builder builder;
 	public Dialog dialog;
 	
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.schedarticolo);
@@ -82,7 +84,8 @@ public class SchedaArticolo extends MainActivity {
 		prV.setText(getIntent().getExtras().getString("PriceSell"));
 		
 		
-		
+		//setto il toast in caso fosse cliccato il pulsante Acquista senza aver selezionato la taglia
+		final Toast toast = Toast.makeText(getApplicationContext(), "Seleziona una Taglia", 1000);
 		
 		// preleva tutti i dati !!
 		new DownloadImg(img,3).execute();
@@ -110,6 +113,16 @@ public class SchedaArticolo extends MainActivity {
 			}
 		});
 		
+		//gestione evento di tocco sul bottone "Acquista" prima di aver selezionato la taglia
+		buy.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				toast.show();
+			}
+		});
+		
 		
 		// gestione evento di tocco sul bottone "Taglie Disponibili"
 		btn.setOnClickListener(new OnClickListener() {
@@ -128,15 +141,44 @@ public class SchedaArticolo extends MainActivity {
 						public void onClick(View v) {
 							// TODO Auto-generated method stub
 							
-							Intent intent = new Intent(SchedaArticolo.this,Cart.class);
-							intent.putExtra("url", url);
-							startActivity(intent);
-							
-							
+							if(url!=null) {
+								
+								mywv.loadUrl(url);
+								AlertDialog.Builder builder = new AlertDialog.Builder(SchedaArticolo.this);
+								builder.setTitle("Prodotto aggiunto al Carrello");
+								
+								builder.setPositiveButton("Continua Acquisti", new DialogInterface.OnClickListener() {
+								
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										// TODO Auto-generated method stub
+										
+									}
+								});
+								
+								builder.setNegativeButton("Vai al Carrello", new DialogInterface.OnClickListener() {
+									
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										// TODO Auto-generated method stub
+										Intent intent = new Intent(SchedaArticolo.this,Cart.class);
+										//intent.putExtra("url", url);
+										startActivity(intent);
+									}
+								});
+								
+								AlertDialog dialog = builder.create();
+								dialog.show();
+								
+							}else {
+								
+								toast.show();
+							}
 						}
 					});	
 			}
 		});
+		
 		
 	}
 	
@@ -151,7 +193,7 @@ public class SchedaArticolo extends MainActivity {
 			// TODO Auto-generated method stub
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/schedart_1.php");
+			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/schedart.php");
 			
 			try {
 				List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
@@ -319,7 +361,7 @@ public class SchedaArticolo extends MainActivity {
 			}
         	
 		
-			@SuppressLint("ResourceAsColor")
+		
 			protected void onPostExecute(String dati){
 				try {
 					final JSONArray jsonArray = new JSONArray(dati);

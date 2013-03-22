@@ -143,7 +143,7 @@ public class LoginActivity extends MainActivity {
 			
 			if(login_name!=null){
 				
-				String postData = "uid="+user+"&pwd="+password;
+				String postData = "uid="+user+"&pwd="+password+"&remember=true";
 				mywv.postUrl("http://www.sportincontro.it/default.asp", EncodingUtils.getBytes(postData, "base64"));
 				
 				mywv.setWebViewClient(new WebViewClient(){

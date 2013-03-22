@@ -21,12 +21,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import com.google.android.gcm.GCMRegistrar;
-
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +46,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -67,6 +65,7 @@ public class MainActivity extends Activity {
 	public CategorieAdapter lista;
 	public String logName;
 	public TextView login_view;
+	public Button logButt;
 	public WebView mywv;
 	SharedPreferences userpref;
 	SharedPreferences.Editor editor;
@@ -79,14 +78,22 @@ public class MainActivity extends Activity {
 		// prendo i riferimenti ai widget
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
+		logButt = (Button) findViewById(R.id.LoginButt);
 		uno = (ListView) findViewById(R.id.listView1);
 		login_view = (TextView) findViewById(R.id.LoginView);
 		mywv = new WebView(this);
+		mywv.getSettings().setJavaScriptEnabled(true);
 		
 		// inizializzo la SheredPreferences e il nome del referente se è salvato
 		userpref = getSharedPreferences("Username", Context.MODE_PRIVATE);
 		logName = userpref.getString("Referente", null);
-		if(logName!=null) login_view.setText("Benvenuto, "+logName);
+		
+		if(logName!=null) {
+			//cambia il nome
+			login_view.setText("Benvenuto, "+logName);
+			logButt.setText("Logoff");
+			//bisogna rifare il login !! 
+		}
 		
 		// adapter con riferimento al layout e alla lista di categorie
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
@@ -118,7 +125,7 @@ public class MainActivity extends Activity {
 		
 			
 			//al clik sul login si apre la LoginActivity
-			login_view.setOnClickListener(new OnClickListener() {
+			logButt.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
@@ -288,6 +295,7 @@ public class MainActivity extends Activity {
 			//prende il nome del referente e lo inserisce nella textview
 			logName = data.getExtras().getString("loginName");
 			login_view.setText("Benvenuto, "+logName);
+			logButt.setText("Logoff");
 			
 			//Salva il nome del referente nello SheredPreference
 			editor = userpref.edit();
@@ -308,6 +316,7 @@ public class MainActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				
+				//questo comando fa in modo che per ogni link cliccato viene ricaricata la webview
 				mywv.setWebViewClient(new WebViewClient(){
 					@Override
 				    public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -319,11 +328,15 @@ public class MainActivity extends Activity {
 			
 				mywv.loadUrl("http://www.sportincontro.it/default.asp?cmd=logout");
 				logName = null;
+				
+				
 				editor = userpref.edit();
 				editor.putString("Referente", logName);
 		        editor.commit();
-				login_view.setText("Clicca per Eseguire l'Accesso");
-				
+		        
+		        
+				login_view.setText("Benvenuto, Ospite");
+				logButt.setText("Accedi");
 			}
 		});
 		
@@ -343,9 +356,6 @@ public class MainActivity extends Activity {
 	
 	}
 	
-	//protected void onRestart(){
-	//System.out.println("Sono ripartito");
-	//}
 	
 	// metodo che fa sparire la tastiera dallo schermo
 	public void sparisciTastiera(){

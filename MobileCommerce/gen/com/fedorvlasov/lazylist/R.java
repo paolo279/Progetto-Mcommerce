@@ -8,10 +8,10 @@ package com.fedorvlasov.lazylist;
 
 public final class R {
 	public static final class id {
-		public static final int image = 0x7f080016;
-		public static final int text = 0x7f080017;
-		public static final int list = 0x7f080019;
-		public static final int button1 = 0x7f08001a;
+		public static final int image = 0x7f080018;
+		public static final int text = 0x7f080019;
+		public static final int list = 0x7f08001b;
+		public static final int button1 = 0x7f08001c;
 	}
 	public static final class string {
 		public static final int hello = 0x7f040000;
