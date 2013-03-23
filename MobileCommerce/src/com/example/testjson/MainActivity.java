@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
 		if(logName!=null) {
 			//cambia il nome
 			login_view.setText("Benvenuto, "+logName);
-			logButt.setText("Logoff");
+			logButt.setText("Log out");
 			//bisogna rifare il login !! 
 		}
 		
@@ -169,9 +169,10 @@ public class MainActivity extends Activity {
 				String query = serch_box.getText().toString();
 				sparisciTastiera();
 				//se la query è composta solo da spazi o è vuoto non esegue la ricerca
-				if(query.matches("^\\s*$") || query.matches("") ){
+				if(query.matches("^\\s*$") || query.matches("") || query.length()< 3 ){
 					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
 					toast.show();
+					serch_box.setText("");
 				}else{
 					
 					Intent intent = new Intent(getApplicationContext(), ListArticoli.class);
@@ -295,7 +296,7 @@ public class MainActivity extends Activity {
 			//prende il nome del referente e lo inserisce nella textview
 			logName = data.getExtras().getString("loginName");
 			login_view.setText("Benvenuto, "+logName);
-			logButt.setText("Logoff");
+			logButt.setText("Log out");
 			
 			//Salva il nome del referente nello SheredPreference
 			editor = userpref.edit();

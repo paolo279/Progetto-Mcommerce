@@ -18,10 +18,11 @@ public final class R {
         public static final int header=0x7f020000;
         public static final int ic_launcher=0x7f020001;
         public static final int icon=0x7f020002;
-        public static final int logo=0x7f020003;
-        public static final int logo1=0x7f020004;
-        public static final int serch_shape=0x7f020005;
-        public static final int stub=0x7f020006;
+        public static final int login_shape=0x7f020003;
+        public static final int logo=0x7f020004;
+        public static final int logo1=0x7f020005;
+        public static final int serch_shape=0x7f020006;
+        public static final int stub=0x7f020007;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080000;
@@ -33,6 +34,7 @@ public final class R {
         public static final int adView=0x7f08000f;
         public static final int button1=0x7f08001c;
         public static final int button2=0x7f080024;
+        public static final int catText=0x7f080027;
         public static final int categoria=0x7f080017;
         public static final int editText1=0x7f08000c;
         public static final int image=0x7f080018;
@@ -40,10 +42,10 @@ public final class R {
         public static final int imageView2=0x7f080010;
         public static final int list=0x7f08001b;
         public static final int listView1=0x7f08000e;
-        public static final int listView2=0x7f080027;
+        public static final int listView2=0x7f080028;
         public static final int listView3=0x7f08001a;
         public static final int loginButton=0x7f080007;
-        public static final int menu_settings=0x7f080029;
+        public static final int menu_settings=0x7f08002a;
         public static final int prLisText=0x7f08001f;
         public static final int prVenText=0x7f080022;
         public static final int priceList=0x7f080012;
@@ -65,7 +67,7 @@ public final class R {
         public static final int tv4=0x7f080023;
         public static final int userText=0x7f080004;
         public static final int webView1=0x7f080016;
-        public static final int zoom_image=0x7f080028;
+        public static final int zoom_image=0x7f080029;
     }
     public static final class layout {
         public static final int activity_login=0x7f030000;

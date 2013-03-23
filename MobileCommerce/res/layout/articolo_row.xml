@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="LEONE Guanto da Sacco Energy"
-            android:textColor="#FF9900"
+            android:textColor="#FF7F24"
             android:textSize="12dp" />
 
         <LinearLayout

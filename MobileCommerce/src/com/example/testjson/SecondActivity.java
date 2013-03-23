@@ -30,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 
 public class SecondActivity extends MainActivity {
@@ -39,7 +40,7 @@ public class SecondActivity extends MainActivity {
 	public Vector<Integer> id = new Vector<Integer>();
 	public String cat;
 	public ListView due;
-	public ListAdapter lista;
+	public CategorieAdapter lista;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,9 +50,14 @@ public class SecondActivity extends MainActivity {
 		//prendo i riferimenti alle view
 		cat = getIntent().getExtras().getString("categoria");
 		due = (ListView) findViewById(R.id.listView2);
+		TextView cat_text = (TextView) findViewById(R.id.catText);
+		
+		// imposto come testo il nome della categoria
+		cat_text.setText(cat);
+		
 		
 		// creo l'adapter con una lista semplice e la lista di subcategorie
-		lista = new ArrayAdapter(this, android.R.layout.simple_list_item_1,v);
+		lista = new CategorieAdapter(this, R.layout.categoria_row, v);
 		
 		//esegue il task per prelevare le subcategorie della categoria scelta
 		new SubcategoryTask().execute();

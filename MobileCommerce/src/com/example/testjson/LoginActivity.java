@@ -23,6 +23,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
@@ -40,6 +42,8 @@ public class LoginActivity extends MainActivity {
 	EditText pwd_text;
 	String login_name;
 	WebView mywv;
+	ProgressDialog dialog;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +67,7 @@ public class LoginActivity extends MainActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				new LoginTask().execute();
-				
+				dialog = ProgressDialog.show(LoginActivity.this, null, "Login in corso..."); 
 				sparisciTastiera();
 				
 				
@@ -86,6 +90,7 @@ public class LoginActivity extends MainActivity {
 		
 		String user;
 		String password;
+		
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
@@ -96,7 +101,7 @@ public class LoginActivity extends MainActivity {
 			
 			user = user_text.getText().toString();
 			password = pwd_text.getText().toString();
-			
+
 				 
 			if(user.matches("^\\s*$") || user.matches(""))return null;
 			
@@ -141,6 +146,8 @@ public class LoginActivity extends MainActivity {
 		
 		protected void onPostExecute(Void unused){
 			
+			
+			
 			if(login_name!=null){
 				
 				String postData = "uid="+user+"&pwd="+password+"&remember=true";
@@ -149,14 +156,16 @@ public class LoginActivity extends MainActivity {
 				mywv.setWebViewClient(new WebViewClient(){
 					public void onPageFinished(WebView view, String url) {
 						Intent intent = getIntent();
-						System.out.println("bella");
+						dialog.dismiss();
+						Toast toast = Toast.makeText(getApplicationContext(), "Accesso Eseguito", 1000);
+						toast.show();
 						intent.putExtra("loginName", login_name);
 						LoginActivity.this.setResult(1, intent);
 						LoginActivity.this.finish();
 				    }
 				});
 			} else {
-				
+				dialog.dismiss();
 				Toast toast = Toast.makeText(getApplicationContext(), "Login Fallito", 1000);
 				toast.show();
 			}

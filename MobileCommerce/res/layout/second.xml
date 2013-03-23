@@ -32,7 +32,24 @@
 
     </LinearLayout>
 
-  
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/serch_shape" >
+
+        <TextView
+            android:id="@+id/catText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:paddingBottom="9dp"
+            android:paddingLeft="5sp"
+            android:paddingTop="9dp"
+            android:text="Sfoglia le categorie:"
+            android:textColor="@color/rosso"
+            android:textSize="22sp" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listView2"
