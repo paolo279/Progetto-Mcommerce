@@ -26,8 +26,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
@@ -59,8 +57,12 @@ public class SecondActivity extends MainActivity {
 		// creo l'adapter con una lista semplice e la lista di subcategorie
 		lista = new CategorieAdapter(this, R.layout.categoria_row, v);
 		
+		
+
+		
 		//esegue il task per prelevare le subcategorie della categoria scelta
-		new SubcategoryTask().execute();
+		if(isNetworkAvailable(this)){
+		new SubcategoryTask().execute();}
 		
 		//al click della subcategoria parte l'activity per visualizzare i prodotti
 		due.setOnItemClickListener(new OnItemClickListener(){
@@ -73,13 +75,14 @@ public class SecondActivity extends MainActivity {
 					int c = id.get(arg2);
 					Intent intent = new Intent(SecondActivity.this,ListArticoli.class);
 					intent.putExtra("id", c);
-					
 					startActivity(intent);
 				};
 				
 			
 			
 		});
+		
+		
 
 	}
 
@@ -116,14 +119,6 @@ public class SecondActivity extends MainActivity {
 					
 				} 
 				
-				
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			try {
 				//dopo aver prelevato i dati crea una array di JSON con le subcategorie e inserisce i valori nelle liste
 				JSONArray jsonArray = new JSONArray(dati);
 				
@@ -132,14 +127,21 @@ public class SecondActivity extends MainActivity {
 					v.add(jsonArray.getJSONObject(i).getString("Descrizione categoria"));
 					id.add(jsonArray.getJSONObject(i).getInt("ID categoria articolo"));
 				}
-			} catch (JSONException e) {
+				
+			} catch (ClientProtocolException e) {
 				e.printStackTrace();
-			}	
-			
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			return null;
 		}
 
 		protected void onPostExecute(Void unused) {
+			
 			// al termine del task setta l'adapter
 			due.setAdapter(lista);
 		

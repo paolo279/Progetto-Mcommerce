@@ -71,7 +71,7 @@ public class ListArticoli extends MainActivity {
 		int[] to ={R.id.titoloArt,R.id.priceList,R.id.priceSell,R.id.imageView2};
 		lista = new ExtendedSimpleAdapter(getApplicationContext(), arrayData, R.layout.articolo_row, from, to);
 		
-		
+		if(isNetworkAvailable(this)){
 		// dialog per il caricamento della lista
 		dialog = ProgressDialog.show(ListArticoli.this, null, "Caricamento articoli..."); 
 		
@@ -111,6 +111,7 @@ public class ListArticoli extends MainActivity {
 				
 			}
 		});
+		}
 	}
 	
 	

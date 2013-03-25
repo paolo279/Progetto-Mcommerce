@@ -5,7 +5,6 @@ package com.example.testjson;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -26,6 +25,8 @@ public class ExtendedSimpleAdapter extends SimpleAdapter{
     int[] to;
     Context context;
     LayoutInflater mInflater;
+    
+    
     public ExtendedSimpleAdapter(Context context, List<HashMap<String, Object>> data,
             int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
@@ -59,7 +60,7 @@ private View createViewFromResource(int position, View convertView,
 
 
 private void bindView(int position, View view) {
-    final HashMap dataSet = map.get(position);
+    final HashMap<String, Object> dataSet = map.get(position);
     if (dataSet == null) {
         return;
     }
@@ -98,16 +99,14 @@ private void bindView(int position, View view) {
                     }
                 } else if (v instanceof TextView) {
                 	
-                    // Note: keep the instanceof TextView check at the bottom of these
-                    // ifs since a lot of views are TextViews (e.g. CheckBoxes).
-                	
+                	//se è una textview imposta il testo
                     setViewText((TextView) v, text);
                 } else if (v instanceof ImageView) {
-                    if (data instanceof Integer) {
-                        setViewImage((ImageView) v, (Integer) data);                            
-                    } else if (data instanceof Bitmap){
+                    if (data instanceof Integer) { //se è un rifermento a una view
+                        setViewImage((ImageView) v, (Integer) data);  
+                    } else if (data instanceof Bitmap){ //se è un bitmap
                         setViewImage((ImageView) v, (Bitmap)data);
-                    } else if (data instanceof String){
+                    } else if (data instanceof String){ // se è una url
                     	setImageFromUrl((ImageView) v, (String)data);
                     } else {
                        setViewImage((ImageView) v, text);
@@ -123,14 +122,16 @@ private void bindView(int position, View view) {
 }
 
 
-
+//metodo che imposta la ImageView se viene passato un bitmap
 private void setViewImage(ImageView v, Bitmap bmp){
     v.setImageBitmap(bmp);
 }
 
+//metodo che imposta la ImageView se viene passato una url
 private void setImageFromUrl(ImageView v, String url){
-	imageLoader = new ImageLoader(context);
 	
+	//crea un oggetto ImageLoader ed esegue il metodo di Display
+	imageLoader = new ImageLoader(context);
 	imageLoader.DisplayImage(url, v);
 	
 	

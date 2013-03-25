@@ -25,9 +25,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -88,8 +86,9 @@ public class SchedaArticolo extends MainActivity {
 		final Toast toast = Toast.makeText(getApplicationContext(), "Seleziona una Taglia", 1000);
 		
 		// preleva tutti i dati !!
+		if(isNetworkAvailable(this)){
 		new DownloadImg(img,3).execute();
-		new SchedaArtTask().execute();
+		new SchedaArtTask().execute();}
 		
 		
 		// dialog per vedere immagine in alta risoluzione

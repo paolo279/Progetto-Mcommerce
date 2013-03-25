@@ -5,8 +5,6 @@ package com.example.testjson;
 import static com.example.testjson.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.example.testjson.CommonUtilities.EXTRA_MESSAGE;
 import static com.example.testjson.CommonUtilities.SENDER_ID;
-import static com.example.testjson.CommonUtilities.SERVER_URL;
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +22,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import com.google.android.gcm.GCMRegistrar;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,13 +67,17 @@ public class MainActivity extends Activity {
 	public TextView login_view;
 	public Button logButt;
 	public WebView mywv;
-	SharedPreferences userpref;
-	SharedPreferences.Editor editor;
+	public SharedPreferences userpref;
+	public SharedPreferences.Editor editor;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		
+		
 		
 		// prendo i riferimenti ai widget
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
@@ -99,13 +103,18 @@ public class MainActivity extends Activity {
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
 		
 		
-		// esegue il task per recuperare le categorie
-		new CategoryTask().execute();
+		//contolla la connessione
+		if(isNetworkAvailable(this)){
+				
+
+			// esegue il task per recuperare le categorie
+			 new CategoryTask().execute();
 		
-		// GCM start
-		GCMconnessione();
+			// GCM start
+			 GCMconnessione();
+		 
 		
-		
+		//evento di click su una categoria
 		uno.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -130,14 +139,14 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					
+					//se l'utente è loggato parte il metodo di logout
 					if(logName!=null){ 
-						
 						logout();
-					
-					
 					}else {
+						
+					// 	parte l'activity e attende il risultato
 					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-					
 					startActivityForResult(intent, 1);
 					}
 				}
@@ -166,47 +175,53 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				//ottiene la stringa della editText e fa sparire la tastiera
 				String query = serch_box.getText().toString();
 				sparisciTastiera();
-				//se la query è composta solo da spazi o è vuoto non esegue la ricerca
+				
+				//se la query è composta solo da spazi o vuota o è minore di 3 caratteri non esegue la ricerca
 				if(query.matches("^\\s*$") || query.matches("") || query.length()< 3 ){
+					
 					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
 					toast.show();
+					//risetta il box 
 					serch_box.setText("");
+					
 				}else{
 					
+					//altrimenti parte l'activity ListArticoli e viene passata la query
 					Intent intent = new Intent(getApplicationContext(), ListArticoli.class);
 					intent.putExtra("query", query);
 					startActivity(intent);
+					}
+				
+				
 				}
-				
-				
-			}
-		});
-		
-		
-		
-			
-		
-		
-	
+			});
+
+		}
 	}
-		
+	
+	//metodo per la gestione della connessione al Server GCM by Google !!	
 	public void GCMconnessione(){
 		
+		//controlla il manifest e che il dispositivo sia registrato
 		GCMRegistrar.checkDevice(this);
 		  GCMRegistrar.checkManifest(this);
 		  
+		  //metodo per registrare il dispositivo al server
 		  registerReceiver(mHandleMessageReceiver,
 	                new IntentFilter(DISPLAY_MESSAGE_ACTION));
+		  //prende l'id del dispositivo
 	        final String regId = GCMRegistrar.getRegistrationId(this);
 	        if (regId.equals("")) {
-	            // Automatically registers application on startup.
+	            // all'avvio registra il dispositivo e lo connette al server GCM
 	            GCMRegistrar.register(this, SENDER_ID);
-	            // Device is already registered on GCM, check server.
 	           
 	            } else {
 	               
+	            	// altrimenti controlla che sia connesso al server e in caso lo registra
 	                final Context context = this;
 	                mRegisterTask = new AsyncTask<Void, Void, Void>() {
 
@@ -290,6 +305,8 @@ public class MainActivity extends Activity {
 		}	
 	}
 	
+	
+	//metodo che viene eseguito quando ritorna un risultato dalla Login Activity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode==1){
 			
@@ -308,9 +325,9 @@ public class MainActivity extends Activity {
 	// metodo che effettua il logout 
 	public void logout(){
 		
+		//viene eseguito un AlertDialog per confermare il logout
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-		
-		builder.setTitle("Sei Sicuro di discotterti ?");
+		builder.setTitle("Sei Sicuro di disconnetterti ?");
 		builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -326,21 +343,23 @@ public class MainActivity extends Activity {
 				    }
 				});
 			
-			
+				//viene caricato l'url in backgroud con il comando di logout che viene salvato nel brawser
 				mywv.loadUrl("http://www.sportincontro.it/default.asp?cmd=logout");
+				
+				//il logName viene cancellato e viene salvata la SharaderPreference
 				logName = null;
-				
-				
 				editor = userpref.edit();
 				editor.putString("Referente", logName);
 		        editor.commit();
 		        
-		        
+		        //infine vengono risettati i testi
 				login_view.setText("Benvenuto, Ospite");
 				logButt.setText("Accedi");
 			}
 		});
 		
+		
+		//se non si vuole effettuare il logout il sistema rimane fermo
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -350,6 +369,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		//il dialog viene creato e lanciato
 		AlertDialog logoutDialog = builder.create();
 		logoutDialog.show();
 		
@@ -360,16 +380,65 @@ public class MainActivity extends Activity {
 	
 	// metodo che fa sparire la tastiera dallo schermo
 	public void sparisciTastiera(){
+		
 		InputMethodManager imm = (InputMethodManager) getSystemService(
 			    INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+		
+		imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 	}
 	
 	
+	
+	// metodo per vedere se la connessione è disponibile
+	public boolean isNetworkAvailable(Context ctx)
+		 {
+		     ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+		     NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		     if (netInfo != null && netInfo.isConnectedOrConnecting()&& cm.getActiveNetworkInfo().isAvailable()&& cm.getActiveNetworkInfo().isConnected()) 
+		     {
+		         return true;
+		     }
+		     else
+		     {
+		    	 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setTitle("Connessione Assente");
+					
+					/*
+					builder.setPositiveButton("close", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});*/
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					
+		         return false;
+		     }
+		 }
+		
+
+
+		
+		// metodo per il brodcastreceiver
+		private final BroadcastReceiver mHandleMessageReceiver =
+	            new BroadcastReceiver() {
+	        @Override
+	        public void onReceive(Context context, Intent intent) {
+	            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+	            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+	           
+	        }
+	    };
+	
+	
+	//menu valido per tutte le activity grazie all'estensione di questa
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
-		//menu valido per tutte le activity grazie all'estensione di questa
 		
+		//viene aperto la Cart Activity
 		menu.add("Carrello").setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -384,6 +453,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		//si ritorna nella Main Activity
 		menu.add("Home").setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -396,6 +466,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		// Si apre il brawser a un link del sito, in questo caso l'HomePage
 		menu.add("Chi Siamo").setOnMenuItemClickListener(new OnMenuItemClickListener() {	
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -406,7 +477,7 @@ public class MainActivity extends Activity {
 			}
 		} );
 		
-		
+		//viene lanciato il programma di invio mail con destinatario già impostato
 		menu.add("Scrivici").setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -417,6 +488,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		//viene effettuata una chiamata al numero dell'azienda
 		menu.add("Telefonaci").setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -430,18 +502,8 @@ public class MainActivity extends Activity {
 	}
 	
 	
-
 	
-	// metodo per il brodcastreceiver
-	private final BroadcastReceiver mHandleMessageReceiver =
-            new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
-           
-        }
-    };
+	
 }
 
 
