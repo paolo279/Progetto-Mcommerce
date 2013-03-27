@@ -72,8 +72,7 @@ public class SchedaArticolo extends MainActivity {
 		buy = (Button) findViewById(R.id.button2);
 		id= getIntent().getExtras().getString("id");
 		
-		//parte il dialog di attesa
-		pd = ProgressDialog.show(SchedaArticolo.this, null, "Caricamento dati...");
+		
 		
 		// setta i testi dei dati passati dalla precendente activity
 		uno.setText(getIntent().getExtras().getString("Description"));
@@ -85,10 +84,13 @@ public class SchedaArticolo extends MainActivity {
 		//setto il toast in caso fosse cliccato il pulsante Acquista senza aver selezionato la taglia
 		final Toast toast = Toast.makeText(getApplicationContext(), "Seleziona una Taglia", 1000);
 		
-		// preleva tutti i dati !!
 		if(isNetworkAvailable(this)){
+		//parte il dialog di attesa
+		pd = ProgressDialog.show(SchedaArticolo.this, null, "Caricamento dati...");
+		
+		// preleva tutti i dati !!
 		new DownloadImg(img,3).execute();
-		new SchedaArtTask().execute();}
+		new SchedaArtTask().execute();
 		
 		
 		// dialog per vedere immagine in alta risoluzione
@@ -177,7 +179,7 @@ public class SchedaArticolo extends MainActivity {
 					});	
 			}
 		});
-		
+		}
 		
 	}
 	

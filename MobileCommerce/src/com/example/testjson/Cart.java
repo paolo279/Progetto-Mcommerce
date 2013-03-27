@@ -31,11 +31,32 @@ public class Cart extends MainActivity {
 		        view.loadUrl(url);
 		        return true;
 		    }
+			
+			public void onPageFinished(WebView view, String url)
+			{
+				//inserisco del codice javascript quando finisce di caricare
+				if(url.equals("http://www.sportincontro.it/default.asp?cmd=showCart#colMid")){
+					
+				
+			    view.loadUrl("javascript:(function() { " +
+			            "document.getElementById('colDx').style.display='none'; " +
+			            "document.getElementById('menu').style.display='none'; " +
+			            "document.getElementById('navBar').style.display='none'; " +
+			            "document.getElementById('head').style.display='none'; " +
+			            "document.getElementById('colSx').style.display='none'; " +
+			            "document.getElementById('bottomElements').style.display='none'; " +
+			            "document.getElementById('mainTable').style.maxWidth='200px'; " +
+			            "})()");
+				}
+			}
+
 		});
+		
 		
 		//prende url passato dalla precedente activity e carica la webview
 		String url = "http://www.sportincontro.it/default.asp?cmd=showCart#colMid";
-		mywv.loadUrl(url);
+		
+		if(isNetworkAvailable(this)) mywv.loadUrl(url);
 	}
 	
 	

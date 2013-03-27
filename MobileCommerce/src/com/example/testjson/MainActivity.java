@@ -322,6 +322,8 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	
+	
 	// metodo che effettua il logout 
 	public void logout(){
 		
@@ -400,20 +402,8 @@ public class MainActivity extends Activity {
 		     }
 		     else
 		     {
-		    	 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Connessione Assente");
-					
-					/*
-					builder.setPositiveButton("close", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							finish();
-						}
-					});*/
-					AlertDialog dialog = builder.create();
-					dialog.show();
+		    	 Toast toast = Toast.makeText(this, "Errore di rete", 1000);
+		    	 toast.show();
 					
 		         return false;
 		     }
