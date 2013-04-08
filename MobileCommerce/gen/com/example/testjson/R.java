@@ -21,8 +21,9 @@ public final class R {
         public static final int login_shape=0x7f020003;
         public static final int logo=0x7f020004;
         public static final int logo1=0x7f020005;
-        public static final int serch_shape=0x7f020006;
-        public static final int stub=0x7f020007;
+        public static final int logo3=0x7f020006;
+        public static final int serch_shape=0x7f020007;
+        public static final int stub=0x7f020008;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080000;

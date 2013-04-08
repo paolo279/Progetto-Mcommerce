@@ -53,7 +53,6 @@ public class ListArticoli extends MainActivity {
 	public ExtendedSimpleAdapter lista;
 	public ArrayList<HashMap<String, Object>> arrayData;
 	
-	public ArrayList<Articolo> listArticoli = new ArrayList<Articolo>(); // prova con lista di oggetti articoli
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -134,6 +133,8 @@ public class ListArticoli extends MainActivity {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/articoli.php");
 			try {
+				
+				//inserisce come paramentro della post l'id della categoria scelta
 				String stringId = Integer.toString(cat);
 				List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
 				nameValuePair.add(new BasicNameValuePair("idcategoria", stringId));
@@ -142,7 +143,8 @@ public class ListArticoli extends MainActivity {
 				StatusLine statusLine = response.getStatusLine();
 				int statusCode = statusLine.getStatusCode();
 				if (statusCode == 200) {
-	        
+					
+					//se l'esito è positivo crea una stringa con i dati della pagina
 					HttpEntity entity = response.getEntity();
 					InputStream content = entity.getContent();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
@@ -151,7 +153,7 @@ public class ListArticoli extends MainActivity {
 					{
 						builder.append(line);
 						
-					} //end while
+					} 
 					 dati = builder.toString();
 					
 				} 
@@ -176,13 +178,6 @@ public class ListArticoli extends MainActivity {
 				JSONArray jsonArray = new JSONArray(dati);
 				
 				for(int i=0; i<jsonArray.length(); i++){
-					
-					/*
-					Articolo articolo = new Articolo();
-					articolo.productId = jsonArray.getJSONObject(i).getInt("IdProduct");
-					articolo.prodCode = jsonArray.getJSONObject(i).getString("ProdCode");
-					articolo.titolo = jsonArray.getJSONObject(i).getString("Description");*/
-					
 					
 					desc.add(jsonArray.getJSONObject(i).getString("Description"));
 					id.add(jsonArray.getJSONObject(i).getString("IdProduct"));
@@ -352,9 +347,10 @@ public class ListArticoli extends MainActivity {
     		
     		protected void onPostExecute(String dati) {
     			
-    			
+    			//al termine del task verifica se la ricerca ha portato risultati
     			if(dati.equals("null")){
     				
+    				//se non ci sono risultati stoppa il dialog e riporta in HomeActivity con un Toast
     				dialog.dismiss();
     				Toast toast = Toast.makeText(getApplicationContext(), "Articolo non Trovato", 1000);
     				toast.show();
@@ -364,6 +360,8 @@ public class ListArticoli extends MainActivity {
 				}else{
     			
     			try {
+    				
+    				//Se ci sono risultati crea un array json con i dati passati e li inserisce i valori nei vettori
     				JSONArray jsonArray = new JSONArray(dati);
     					
     					for(int i=0; i<jsonArray.length(); i++){
@@ -378,6 +376,7 @@ public class ListArticoli extends MainActivity {
         					prv.add(price[1]);
         					
         				}
+    						//dopo aver prelevato i dati escegue il task per prendere l'immagini 
         					new TaskImg().execute();
         		
     				
@@ -393,7 +392,11 @@ public class ListArticoli extends MainActivity {
      
     //metodo per calcolare i prezzi di listino e di vendita dalla stringa del db
 	public  String[] getPrices(String pricemap){
+		
+		//leva i primi 4 caratteri
 		String a = pricemap.substring(4);
+		
+		//poi crea due stringhe con i prezzi di vendita e di listino
 		
 		int j = a.indexOf("|");
 		
@@ -402,13 +405,14 @@ public class ListArticoli extends MainActivity {
 		int k = b.indexOf("|");
 		String prV = b.substring(0, k);
 		
-		
+		//aggiunge l'iva e arrotonda i prezzi
 		NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
 		nf.setMinimumFractionDigits(2);
 		nf.setMaximumFractionDigits(2);
 		double plivainc =  Double.parseDouble(prL)*1.21;
 		double pvivainc =  Double.parseDouble(prV)*1.21;
 		
+		//inserisce i due prezzi in un array
 		String[] price ={nf.format(plivainc),nf.format(pvivainc)};
 		
 		return price;

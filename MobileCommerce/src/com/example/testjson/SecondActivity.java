@@ -62,7 +62,7 @@ public class SecondActivity extends MainActivity {
 		
 		//esegue il task per prelevare le subcategorie della categoria scelta
 		if(isNetworkAvailable(this)){
-		new SubcategoryTask().execute();}
+		new SubcategoryTask().execute();
 		
 		//al click della subcategoria parte l'activity per visualizzare i prodotti
 		due.setOnItemClickListener(new OnItemClickListener(){
@@ -82,7 +82,7 @@ public class SecondActivity extends MainActivity {
 			
 		});
 		
-		
+		}
 
 	}
 

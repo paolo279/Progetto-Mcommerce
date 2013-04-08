@@ -144,7 +144,12 @@ public class SchedaArticolo extends MainActivity {
 							
 							if(url!=null) {
 								
+								//se viene passato l'url, viene caricato nella webview
 								mywv.loadUrl(url);
+								
+								
+								//viene caricato un AlertDialog dove l'utente può scegliere se continuare gli acquisti
+								//o andare al carrello
 								AlertDialog.Builder builder = new AlertDialog.Builder(SchedaArticolo.this);
 								builder.setTitle("Prodotto aggiunto al Carrello");
 								
@@ -162,8 +167,9 @@ public class SchedaArticolo extends MainActivity {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
 										// TODO Auto-generated method stub
+										
 										Intent intent = new Intent(SchedaArticolo.this,Cart.class);
-										//intent.putExtra("url", url);
+									
 										startActivity(intent);
 									}
 								});
@@ -238,10 +244,12 @@ public class SchedaArticolo extends MainActivity {
 		
 		protected void onPostExecute(String dati){
 			
+				//dopo aver preso i dati vengono inseriti nelle TextView
 				colore.setText(colorString);
 				
 				desc.setText(Html.fromHtml(descString));
 				
+				//viene terminato il dialog
 				pd.dismiss();
 			
 			
@@ -364,7 +372,9 @@ public class SchedaArticolo extends MainActivity {
 		
 		
 			protected void onPostExecute(String dati){
+				
 				try {
+					//al termine crea un array JSON  e 
 					final JSONArray jsonArray = new JSONArray(dati);
 					
 					System.out.print(jsonArray.toString());
@@ -380,6 +390,9 @@ public class SchedaArticolo extends MainActivity {
 						CategoryID.add(jsonArray.getJSONObject(i).getString("CategoryID"));
 						
 					}
+					
+					//controllo se la taglia è unica
+					if(taglie[0].equals("") || taglie[0].equals("null")) taglie[0] = "UNICA";
 					
 					builder = new AlertDialog.Builder(SchedaArticolo.this);
 					builder.setTitle("Taglie Disponibili:");
@@ -411,6 +424,7 @@ public class SchedaArticolo extends MainActivity {
 			
         }
     		
+        // metodo per la creazione il download del bitmap da una url
         public  Bitmap getBitmap(String url) throws MalformedURLException, IOException{
     		
     		HttpURLConnection connection;
