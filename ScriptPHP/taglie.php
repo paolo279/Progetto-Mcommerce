@@ -15,11 +15,22 @@ $id = $_POST["id"];
 
 $query2 = mysql_query("SELECT CustomT1Desc, IdProduct, CategoryID FROM WebOggetti WHERE IdArticoloMasterTagliaColore = $id AND QTotMagazzino > 0");
 
+
 while($e=mysql_fetch_assoc($query2)) {
-	$output[]=$e; }
+	$output[]=$e; 
+        }
+        
+        if(empty($output)){
+            $query = mysql_query("SELECT CustomT1Desc, IdProduct, CategoryID FROM WebOggetti WHERE IdProduct = $id AND QTotMagazzino > 0");
 
-	print(json_encode($output));
-
+            while($e=  mysql_fetch_assoc($query)) {
+                $output[]=$e;
+                }
+        }
+        
+	
+        print(json_encode($output));
+     
 
 
 	mysql_close($conn);

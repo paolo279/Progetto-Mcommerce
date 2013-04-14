@@ -43,13 +43,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     @Override
     protected void onRegistered(Context context, String registrationId) {
-   
+    	//chiama il metodo register della ServerUtilities
         ServerUtilities.register(context, registrationId);
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId) {
-        
+        //chiama il metodo unregister se il device è registrato
         if (GCMRegistrar.isRegisteredOnServer(context)) {
             ServerUtilities.unregister(context, registrationId);
         } else {
@@ -89,7 +89,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     /**
-     * Issues a notification to inform the user that server has sent a message.
+     * metodo per generare un messaggio di notifica al cliente
      */
     private static void generateNotification(Context context, String message) {
         int icon = R.drawable.logo3;
