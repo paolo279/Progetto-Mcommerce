@@ -40,19 +40,29 @@ public class ExtendedSimpleAdapter extends SimpleAdapter{
 
 @Override
 public View getView(int position, View convertView, ViewGroup parent) {
+	
+	//prende il riferimento del LayoutInflater con il metodo getSystemService
     mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    
+    //ritorna una View con il metodo definito successivamente
     return this.createViewFromResource(position, convertView, parent, layout);
 }
 
 private View createViewFromResource(int position, View convertView,
         ViewGroup parent, int resource) {
+	
     View v;
+    
+    // se è il primo elemento della lista esegue l'inflater
     if (convertView == null) {
         v = mInflater.inflate(resource, parent, false);
     } else {
+    	
+    	// per gli elementi successivi gli associa direttamente 
         v = convertView;
     }
-
+    
+    //esegue il metodo bindView
     this.bindView(position, v);
 
     return v;
@@ -60,14 +70,19 @@ private View createViewFromResource(int position, View convertView,
 
 
 private void bindView(int position, View view) {
+	
+	//prende l'HashMap dell'elemento della lista
     final HashMap<String, Object> dataSet = map.get(position);
+    
     if (dataSet == null) {
         return;
     }
-
+    
+    // crea l'oggetto ViewBinder e lo istanzia
     final ViewBinder binder = super.getViewBinder();
     final int count = to.length;
 
+    //per ogni elemento della Map viene associata la risorsa del layout nell'ordine passato dall'array to[]
     for (int i = 0; i < count; i++) {
         final View v = view.findViewById(to[i]);
         if (v != null) {
@@ -76,12 +91,14 @@ private void bindView(int position, View view) {
             if (text == null) {
                 text = "";
             }
-
+            
+            //il boolean bound verifica se il dato è legato alla specifica View
             boolean bound = false;
             if (binder != null) {
                 bound = binder.setViewValue(v, data, text);
             }
-
+            
+            //se non è bindato esegue il codice
             if (!bound) {
                 if (v instanceof Checkable) {
                     if (data instanceof Boolean) {

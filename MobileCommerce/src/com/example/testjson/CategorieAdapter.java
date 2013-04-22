@@ -32,21 +32,32 @@ public class CategorieAdapter extends ArrayAdapter<String>  {
     
 	public View getView(int position, View v, ViewGroup parent){
 		
+		//prendiamo la stringa nella posizione
 		String obj = getItem(position);
 		
+		// tramite ViewHolder manteniamo i riferimenti alla TextView
 		ViewHolder holder;
 		
 		if (v == null) {
+			// questo procedimento viene fatto per il primo elemento della lista
+			
+			//l'inflater ci permette di istanziare un oggetto da una risorsa XML
             v = inflater.inflate(resource, parent, false);
+            
+            //istanziamo l'holder e settiamo la categoria con la risorsa del layout
             holder = new ViewHolder();
             holder.categoria = (TextView) v.findViewById(R.id.categoria);
-
+            
+            // con il metodo setTag() associamo l'oggetto alla view
             v.setTag(holder);
+            
 			} else {
+				
+				//nei successivi elementi riutilizziamo l'holder per associare l'oggetto successivo
 				holder = (ViewHolder) v.getTag();
 			}
 		
- 
+		//impostiamo il testo nella TextView
 		holder.categoria.setText(obj);
   
 		return v;

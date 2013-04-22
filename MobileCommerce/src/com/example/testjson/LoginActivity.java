@@ -81,6 +81,7 @@ public class LoginActivity extends MainActivity {
 		
 	}
 	
+	//task per effettuare il login
 	public class LoginTask extends AsyncTask<Void, Void, Void> {
 		
 		String user;
@@ -94,14 +95,16 @@ public class LoginActivity extends MainActivity {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/login.php");
 			
+			//prendo il testo delle EdiText
 			user = user_text.getText().toString();
 			password = pwd_text.getText().toString();
 
-				 
+			//se l'username o la password non contengono caratteri significativi ritorna null	 
 			if(user.matches("^\\s*$") || user.matches(""))return null;
 			
 			if(password.matches("^\\s*$") || password.matches(""))return null;
 				
+			//effettua una post per trovare la corrispondenza nel db
 				try {
 					List<NameValuePair> nameValuePair= new ArrayList<NameValuePair>();
 					nameValuePair.add(new BasicNameValuePair("user", user));
@@ -120,7 +123,7 @@ public class LoginActivity extends MainActivity {
 						{
 							login_name = line;
 							
-						} //end while
+						}
 						
 					}
 				} catch (ClientProtocolException e) {
@@ -142,13 +145,16 @@ public class LoginActivity extends MainActivity {
 		protected void onPostExecute(Void unused){
 			
 			
-			
+			// se ha trovato una corrispondenza esegue il codice
 			if(login_name!=null){
 				
+				//fa una get sul sito con i paramentri per il login da una WebView
 				String postData = "uid="+user+"&pwd="+password+"&remember=true";
 				mywv.postUrl("http://www.sportincontro.it/default.asp", EncodingUtils.getBytes(postData, "base64"));
 				
 				mywv.setWebViewClient(new WebViewClient(){
+					
+					//quando la pagina finisce il caricamento lancia un toast e torna in Home 
 					public void onPageFinished(WebView view, String url) {
 						Intent intent = getIntent();
 						dialog.dismiss();
@@ -159,7 +165,11 @@ public class LoginActivity extends MainActivity {
 						LoginActivity.this.finish();
 				    }
 				});
+				
+				
 			} else {
+				
+				//se il task ha restituito null, esegue un toast per indicare il fallimento
 				dialog.dismiss();
 				Toast toast = Toast.makeText(getApplicationContext(), "Login Fallito", 1000);
 				toast.show();

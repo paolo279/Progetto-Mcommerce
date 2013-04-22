@@ -64,14 +64,16 @@ public class ListArticoli extends MainActivity {
 		img = (ImageView) findViewById(R.id.imageView2);
 		
 		
-		// array di dati per il simpleadapter custum
+		// ArrayList di dati per il simpleadapter custum
 		arrayData=new ArrayList<HashMap<String,Object>>(); 
 		String[] from = {"Description","priceList","priceSell","icona"};
 		int[] to ={R.id.titoloArt,R.id.priceList,R.id.priceSell,R.id.imageView2};
 		lista = new ExtendedSimpleAdapter(getApplicationContext(), arrayData, R.layout.articolo_row, from, to);
 		
+		
 		if(isNetworkAvailable(this)){
-		// dialog per il caricamento della lista
+			
+		// dialog per l'attesa del caricamento della lista
 		dialog = ProgressDialog.show(ListArticoli.this, null, "Caricamento articoli..."); 
 		
 		
@@ -114,7 +116,7 @@ public class ListArticoli extends MainActivity {
 	}
 	
 	
-	//quando l'activity viene "distrutta" verrà cancellata anche la cache nella SD
+	//quando l'activity viene "distrutta" verrà cancellata anche la cache nella Memoria del Telefono
 	protected void onDestroy(){	
 		super.onDestroy(); 
 		lista.imageLoader.clearCache();
@@ -183,7 +185,7 @@ public class ListArticoli extends MainActivity {
 					id.add(jsonArray.getJSONObject(i).getString("IdProduct"));
 					cod.add(jsonArray.getJSONObject(i).getString("ProdCode"));
 					
-					//array per i 2 prezzi che verranno calcolati nel metodo getPrice()
+					//array per i 2 prezzi che verranno calcolati con il metodo getPrice()
 					String[] price = new String[2];
 					price = getPrices(jsonArray.getJSONObject(i).getString("priceList"));
 					
@@ -208,7 +210,7 @@ public class ListArticoli extends MainActivity {
 	}
 	
 	
-	   	 
+	   	//task per il download delle Url relative alle foto degli articoli
         class TaskImg extends AsyncTask<Void, Void, Void>{
         	
         	//array dove verranno salvate le url delle img
@@ -222,7 +224,7 @@ public class ListArticoli extends MainActivity {
 				
 	        	
 				//esegue una post http con valori il numero di foto da prendere e il tipo di foto da trovare
-				//in questo caso quella piccola
+				//in questo caso quella piccola che è di tipo 2
 				HttpClient client = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/foto.php");
 	    		try {
@@ -246,7 +248,7 @@ public class ListArticoli extends MainActivity {
 						int j=0;
 						while ((line = reader.readLine()) != null) 
 						{
-							//controllo che il paramentro non contiene spazi
+							//controllo che la linea non contiene spazi e in caso li converte
 							line = line.replace(" ","%20");
 							
 							imageUrls[j] = "http://www.sportincontro.it/files/sport_incontro_Files/Foto/"+line;
@@ -306,6 +308,8 @@ public class ListArticoli extends MainActivity {
     		protected String doInBackground(Void... params) {
     			// TODO Auto-generated method stub
     			
+    			
+    			//esegue una Post per effettuare la ricerca nel database.
     			StringBuilder builder = new StringBuilder();		
     			HttpClient client = new DefaultHttpClient();
     			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/CercaArticoli.php");

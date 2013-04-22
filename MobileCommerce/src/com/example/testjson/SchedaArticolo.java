@@ -81,7 +81,7 @@ public class SchedaArticolo extends MainActivity {
 		prV.setText(getIntent().getExtras().getString("PriceSell"));
 		
 		
-		//setto il toast in caso fosse cliccato il pulsante Acquista senza aver selezionato la taglia
+		//toast in caso fosse cliccato il pulsante Acquista senza aver selezionato la taglia
 		final Toast toast = Toast.makeText(getApplicationContext(), "Seleziona una Taglia", 1000);
 		
 		if(isNetworkAvailable(this)){
@@ -93,22 +93,22 @@ public class SchedaArticolo extends MainActivity {
 		new SchedaArtTask().execute();
 		
 		
-		// dialog per vedere immagine in alta risoluzione
+		// se viene cliccata la foto si apre un dialog con l'immagine in alta risoluzione
 		img.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				//creo un dialog per l'immagine grande
+				//dialog per l'immagine in alta risoluzione
 				dialog = new Dialog(SchedaArticolo.this);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.zoom_dialog);
 				
-				
-				
+				//prende il riferimento nel layout
 				ImageView image = (ImageView) dialog.findViewById(R.id.zoom_image);
-	
+				
+				//parte il task per il download dell'immagine, viene passato il tipo di foto nel formato più grande
 				new DownloadImg(image, 4).execute();
 				
 			}
@@ -120,6 +120,8 @@ public class SchedaArticolo extends MainActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				// viene visualizzato il toast
 				toast.show();
 			}
 		});
@@ -179,6 +181,7 @@ public class SchedaArticolo extends MainActivity {
 								
 							}else {
 								
+								//se non è stata selezionata nessuna taglia, il pulsante rimane rosso e parte il toast in caso di click
 								toast.show();
 							}
 						}
@@ -219,6 +222,8 @@ public class SchedaArticolo extends MainActivity {
 					int i = 0;
 					while ((line = reader.readLine()) != null) 
 					{	
+						//nella prima linea viene stampato il colore
+						//le successive riguardano la descrizione in formato html
 						if(i==0) {
 							colorString = line;
 						}else {builder.append(line);}
@@ -259,16 +264,19 @@ public class SchedaArticolo extends MainActivity {
 	// Task per il download della foto
 	private class DownloadImg extends AsyncTask<Void,Bitmap,Bitmap> {
 	   	 ImageView imageview;
-	   	 int tipoFoto;
+	   	 int tipoFoto; //numero che identifica il tipo di foto dell'articolo da scaricare
 	   	 
 	   	 DownloadImg (ImageView imageview, int tipoFoto){
 	   		 this.imageview= imageview;
 	   		 this.tipoFoto = tipoFoto;
 	   	 }
+	   	 
         protected void onPostExecute(Bitmap bitmap) {
         	
+        	// dopo l'esecuzione imposta la Imageview con la foto scaricata.
         	imageview.setImageBitmap(bitmap);
         	
+        	// se il tipo di foto scaricato è quello grande, allora fa partire il dialog.
         	if(tipoFoto==4) dialog.show();
        }
         
@@ -298,13 +306,12 @@ public class SchedaArticolo extends MainActivity {
 						builder.append(line);
 						
 					} 
-					
+					//path del server dove sono posizionate tutte le foto.
 					String imageUrl = "http://www.sportincontro.it/files/sport_incontro_Files/Foto/";
 					imageUrl = imageUrl+builder.toString();
     			
-				System.out.println(imageUrl);
-				
-				Bitmap bitmap = getBitmap(imageUrl);
+					// viene creato il bitmap con il metodo getBitmap
+					Bitmap bitmap = getBitmap(imageUrl);
 				
     			
     			return bitmap;
@@ -323,7 +330,6 @@ public class SchedaArticolo extends MainActivity {
 	
 	
 		//Task per la visualizzazione delle taglie in un AlertDialog
-	
         public class TaglieTask extends AsyncTask<Void,String,String>{
 
 			@Override
@@ -374,7 +380,8 @@ public class SchedaArticolo extends MainActivity {
 			protected void onPostExecute(String dati){
 				
 				try {
-					//al termine crea un array JSON  e 
+					
+					//al termine crea un array JSON  e inserisce le taglie nei vettori
 					final JSONArray jsonArray = new JSONArray(dati);
 					
 					System.out.print(jsonArray.toString());
@@ -394,6 +401,7 @@ public class SchedaArticolo extends MainActivity {
 					//controllo se la taglia è unica
 					if(taglie[0].equals("") || taglie[0].equals("null")) taglie[0] = "UNICA";
 					
+					//crea l'AllertDialog per la scelta delle taglie
 					builder = new AlertDialog.Builder(SchedaArticolo.this);
 					builder.setTitle("Taglie Disponibili:");
 					builder.setItems(taglie, new DialogInterface.OnClickListener() {
@@ -402,12 +410,15 @@ public class SchedaArticolo extends MainActivity {
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
 							
+							// se l'utente sceglie una taglia, viene impostata l'url per il caricamento
+							// nel carrello
+							
 							idP = IdProduct.elementAt(which);
 							url ="http://www.sportincontro.it/test/CartPost.php?idP="+idP;
-							System.out.println(url);
 							
 							//il pulsante acquista diventa verde
 							buy.setTextColor(Color.rgb(0, 255, 0));
+							
 							Toast toast = Toast.makeText(getApplicationContext(), taglie[which]+" selezionata", 1000);
 							toast.show();
 						}
@@ -429,7 +440,6 @@ public class SchedaArticolo extends MainActivity {
     		
     		HttpURLConnection connection;
     		connection = (HttpURLConnection) new URL(url).openConnection();
-    	
     		connection.setDoInput(true);
     		connection.connect();
     		InputStream is = connection.getInputStream();

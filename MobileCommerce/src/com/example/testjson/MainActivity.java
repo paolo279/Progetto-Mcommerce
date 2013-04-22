@@ -76,41 +76,39 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		
-		
-		
 		// prendo i riferimenti ai widget
 		ImageView serch_button = (ImageView) findViewById(R.id.serchButton);
 		final EditText serch_box = (EditText) findViewById(R.id.editText1);
 		logButt = (Button) findViewById(R.id.LoginButt);
 		uno = (ListView) findViewById(R.id.listView1);
 		login_view = (TextView) findViewById(R.id.LoginView);
+		
+		//viene creata una webview con il javascript abilitato
 		mywv = new WebView(this);
 		mywv.getSettings().setJavaScriptEnabled(true);
 		
-		// inizializzo la SheredPreferences e il nome del referente se è salvato
+		// inizializzo la SheredPreferences e il nome dell'utente se è salvato
 		userpref = getSharedPreferences("Username", Context.MODE_PRIVATE);
 		logName = userpref.getString("Referente", null);
 		
 		if(logName!=null) {
-			//cambia il nome
+			
+			//se il nome è salvato, vengono impostate le TextView
 			login_view.setText("Benvenuto, "+logName);
 			logButt.setText("Log out");
-			//bisogna rifare il login !! 
 		}
 		
 		// adapter con riferimento al layout e alla lista di categorie
 		lista= new CategorieAdapter(this, R.layout.categoria_row, v);
 		
 		
-		//contolla la connessione
+		//contolla la connessione 
 		if(isNetworkAvailable(this)){
-				
 
 			// esegue il task per recuperare le categorie
 			 new CategoryTask().execute();
 		
-			// GCM start
+			//fa partire il metodo per l'aggancio a Google Cloud Message !
 			 GCMconnessione();
 		 
 		
@@ -124,16 +122,14 @@ public class MainActivity extends Activity {
 				
 					//inserisco nel bundle l'id della categoria scelto e lancio la seconda activity
 					String b = v.get(arg2);
-					
 					Intent intent = new Intent(MainActivity.this,SecondActivity.class);
 					intent.putExtra("categoria", b);
-					
 					startActivity(intent);
 				};	
 		});
 		
 			
-			//al clik sul login si apre la LoginActivity
+			//al clik sul bottone di Login viene aperta LoginActivity
 			logButt.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -145,7 +141,7 @@ public class MainActivity extends Activity {
 						logout();
 					}else {
 						
-					// 	parte l'activity e attende il risultato
+					// parte l'activity e attende il risultato
 					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 					startActivityForResult(intent, 1);
 					}
@@ -185,12 +181,13 @@ public class MainActivity extends Activity {
 					
 					Toast toast = Toast.makeText(getApplicationContext(), "Ricerca non valida", 1000);
 					toast.show();
+					
 					//risetta il box 
 					serch_box.setText("");
 					
 				}else{
 					
-					//altrimenti parte l'activity ListArticoli e viene passata la query
+					//altrimenti parte l'activity ListArticoli e viene passata la query per la ricerca
 					Intent intent = new Intent(getApplicationContext(), ListArticoli.class);
 					intent.putExtra("query", query);
 					startActivity(intent);
@@ -203,6 +200,8 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	
+	
 	//metodo per la gestione della connessione al Server GCM by Google !!	
 	public void GCMconnessione(){
 		
@@ -213,9 +212,11 @@ public class MainActivity extends Activity {
 		  //metodo per registrare il dispositivo al server
 		  registerReceiver(mHandleMessageReceiver,
 	                new IntentFilter(DISPLAY_MESSAGE_ACTION));
+		  
 		  //prende l'id del dispositivo
 	        final String regId = GCMRegistrar.getRegistrationId(this);
 	        if (regId.equals("")) {
+	        	
 	            // all'avvio registra il dispositivo e lo connette al server GCM
 	            GCMRegistrar.register(this, SENDER_ID);
 	           
@@ -247,22 +248,24 @@ public class MainActivity extends Activity {
 	}
 			  
 
-	
+	// metodo per prelevare le categorie principali dal server
 	public class CategoryTask extends AsyncTask<Void, String, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			
-			// esegue una post http per prendere le categorie
+			// esegue una chiamata Http per prendere le categorie
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/categorie.php");
+			
 			try {
 				HttpResponse response = client.execute(httpPost);
 				StatusLine statusLine = response.getStatusLine();
 				int statusCode = statusLine.getStatusCode();
 				if (statusCode == 200) {
+					// se la risposta è arrivata legge i dati e li inserisce in una StringBuilder
 					HttpEntity entity = response.getEntity();
 					InputStream content = entity.getContent();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
@@ -272,6 +275,8 @@ public class MainActivity extends Activity {
 						builder.append(line);
 						
 					} //end while
+					
+					//viene creata la stringa a partire dalla StringBuilder
 					dati = builder.toString();
 
 						
@@ -282,7 +287,9 @@ public class MainActivity extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
 			try {
+				
 				// crea un'array JSON con la stringa letta e inserisce i valori in una lista
 				JSONArray jsonArray = new JSONArray(dati);
 				for(int i=0; i<jsonArray.length(); i++){
@@ -412,7 +419,7 @@ public class MainActivity extends Activity {
 
 
 		
-		// metodo per il brodcastreceiver
+		// metodo per il Brodcastreceiver quando viene inviata una notifica dal Server GCM
 		private final BroadcastReceiver mHandleMessageReceiver =
 	            new BroadcastReceiver() {
 	        @Override

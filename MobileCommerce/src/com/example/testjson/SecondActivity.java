@@ -53,12 +53,8 @@ public class SecondActivity extends MainActivity {
 		// imposto come testo il nome della categoria
 		cat_text.setText(cat);
 		
-		
-		// creo l'adapter con una lista semplice e la lista di subcategorie
+		// creo l'adapter con la lista di subcategorie
 		lista = new CategorieAdapter(this, R.layout.categoria_row, v);
-		
-		
-
 		
 		//esegue il task per prelevare le subcategorie della categoria scelta
 		if(isNetworkAvailable(this)){
@@ -94,7 +90,7 @@ public class SecondActivity extends MainActivity {
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			
-			// esegue una post http con il valore della categorie scelta nella main activity
+			// esegue una Post Http con il valore della categorie scelta nella MainActivity
 			StringBuilder builder = new StringBuilder();		
 			HttpClient client = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://www.sportincontro.it/test/subcategorie.php");
